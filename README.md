@@ -72,10 +72,16 @@ A naive single-window optimizer told me to weight NN predictions at 95–100% be
 
 ## Known limitations
 
-- No historical fundamentals. yfinance doesn't expose past PE/ROE/analyst targets, so Stage 1 features are technical + macro only. Fundamentals enter only at Stage 2 via current analyst consensus.
-- Sector concentration. The selection step has no diversification constraint, so top 5 often cluster in 2 sectors (typically AI Compute + Neuromodulation). I currently accept this because the backtest shows rank-correlation is much stronger within-sector than across — forced diversification would pick lower-scoring stocks.
-- yfinance rate limits. Heavy S&P 500 batch downloads occasionally cause cross-asset fetches to return truncated history. The tz-safety fix in `training_universe.py` means this degrades gracefully, but ideally the macro loads should happen before the big batch.
-- This is not investment advice. Predictions carry ±12%p MAE on return and ±9%p on risk. Realized Sharpe will likely be 30–35% lower than predicted Sharpe.
+- **Alpha is universe-relative, not baseline-compared.** The reported +15.4%p "selection alpha" is measured against the mean of the same 84 stocks, not against an external benchmark (random selection, SPY buy-and-hold, or momentum top-5). Without these baselines it is not possible to claim the selection beats a null model. Adding them is planned.
+- **Fold 1 outlier inflates the headline alpha.** SNDK's post-IPO run drives Fold 1 to an unusually high value; the robust estimate across Folds 2–5 is closer to +8.5%p. The aggregate number should be read with this in mind.
+- **Hyperparameters set by trial-and-error**, not systematic search. NN architecture, learning rate, epochs, and dropout are all manually chosen. Sensitivity to these choices is not characterized.
+- **No transaction cost, slippage, or tax modeling.** All backtest numbers are paper-alpha and will be lower after real-world frictions (typically several %p/year for monthly rebalancing strategies).
+- **Survivorship bias in the training universe.** Tickers are sampled from the current S&P 500 + NASDAQ-100 composition, so stocks that were delisted or removed from the index during the 10-year window are underrepresented. This biases the training distribution toward survivors.
+- **Composite score coefficients are hand-picked.** `sentiment_weight=0.10`, `fda_bonus=0.08`, `uncertainty_penalty=3.0`, `event_risk_penalty=2.0`. No ablation study characterizes their individual contribution.
+- **No historical fundamentals.** yfinance doesn't expose past PE/ROE/analyst targets, so Stage 1 features are technical + macro only. Fundamentals enter only at Stage 2 via current analyst consensus.
+- **Sector concentration.** The selection step has no diversification constraint, so top 5 often cluster in 2 sectors (typically AI Compute + Neuromodulation). I currently accept this because the backtest shows rank-correlation is much stronger within-sector than across — forced diversification would pick lower-scoring stocks.
+- **yfinance rate limits.** Heavy S&P 500 batch downloads occasionally cause cross-asset fetches to return truncated history. The tz-safety fix in `training_universe.py` means this degrades gracefully, but ideally the macro loads should happen before the big batch.
+- **This is not investment advice.** Predictions carry ±12%p MAE on return and ±9%p on risk. Realized Sharpe will likely be 30–35% lower than predicted Sharpe.
 
 ## Output
 
