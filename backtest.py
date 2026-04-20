@@ -268,6 +268,27 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers,
     models = []
     D = X_tr_n.shape[1]
 
+    # Tensor conversion (once, outside ensemble loop)
+    Xt = torch.tensor(X_tr_n, dtype=torch.float32)
+    yr = torch.tensor(Y_ret_tr, dtype=torch.float32)
+    yk = torch.tensor(Y_risk_tr, dtype=torch.float32)
+
+    # Train/val split for early stopping (80/20, shared across ensemble members)
+    # Note: use X_fit (not X_tr) to avoid shadowing the outer X_tr numpy variable
+    torch.manual_seed(42)
+    N_tr = Xt.shape[0]
+    n_val = int(N_tr * 0.2)
+    perm = torch.randperm(N_tr)
+    val_idx = perm[:n_val]
+    tr_idx = perm[n_val:]
+    X_fit, X_val = Xt[tr_idx], Xt[val_idx]
+    yr_fit, yr_val = yr[tr_idx], yr[val_idx]
+    yk_fit, yk_val = yk[tr_idx], yk[val_idx]
+
+    lr = getattr(config, 'TRAINING_LR', 0.0005)
+    delta = getattr(config, 'TRAINING_HUBER_DELTA', 0.3)
+    epochs = min(getattr(config, 'TRAINING_EPOCHS', 800), 500)  # capped for speed
+
     for e in range(n_ensemble):
         torch.manual_seed(42 + e * 17)
         arch = getattr(config, 'TRAINING_NN_ARCHITECTURE', [64, 32, 16])
@@ -278,38 +299,48 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers,
             in_dim = h
         layers.append(nn.Linear(in_dim, 2))
         model = nn.Sequential(*layers)
-
-        lr = getattr(config, 'TRAINING_LR', 0.0005)
-        delta = getattr(config, 'TRAINING_HUBER_DELTA', 0.3)
-        epochs = min(getattr(config, 'TRAINING_EPOCHS', 800), 500)  # capped for speed
-
         opt = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
-        Xt = torch.tensor(X_tr_n, dtype=torch.float32)
-        yr = torch.tensor(Y_ret_tr, dtype=torch.float32)
-        yk = torch.tensor(Y_risk_tr, dtype=torch.float32)
 
-        model.train()
-        best_loss, patience = float('inf'), 0
+        best_val, patience = float('inf'), 0
+        best_state = None
+        best_ep = 0
         for ep in range(epochs):
+            # Train step (dropout active)
+            model.train()
             opt.zero_grad()
-            out = model(Xt)
-            loss = F.huber_loss(out[:, 0], yr, delta=delta) + \
-                   F.huber_loss(F.softplus(out[:, 1]), yk, delta=delta)
-            if torch.isnan(loss):
+            out = model(X_fit)
+            train_loss = F.huber_loss(out[:, 0], yr_fit, delta=delta) + \
+                         F.huber_loss(F.softplus(out[:, 1]), yk_fit, delta=delta)
+            if torch.isnan(train_loss):
                 break
-            loss.backward()
+            train_loss.backward()
             opt.step()
-            if loss.item() < best_loss:
-                best_loss = loss.item()
+
+            # Val step (dropout off)
+            model.eval()
+            with torch.no_grad():
+                val_out = model(X_val)
+                val_loss = F.huber_loss(val_out[:, 0], yr_val, delta=delta) + \
+                           F.huber_loss(F.softplus(val_out[:, 1]), yk_val, delta=delta)
+                val_loss_item = val_loss.item()
+
+            if val_loss_item < best_val:
+                best_val = val_loss_item
+                best_state = {k: v.clone() for k, v in model.state_dict().items()}
+                best_ep = ep
                 patience = 0
             else:
                 patience += 1
-                if patience > 80:
+                if patience > 40:
                     break
+
+        # Restore best val-loss checkpoint
+        if best_state is not None:
+            model.load_state_dict(best_state)
 
         models.append(model)
         if verbose:
-            print(f"    NN #{e+1}: loss={best_loss:.6f}, epochs={min(ep+1, epochs)}")
+            print(f"    NN #{e+1}: val_loss={best_val:.6f} at epoch {best_ep+1}, stopped at {ep+1}")
 
     # Predict on test samples
     X_te_t = torch.tensor(X_te_n, dtype=torch.float32)

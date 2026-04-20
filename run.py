@@ -386,6 +386,18 @@ def _historical_train_and_predict(tickers, D):
     yr_t = torch.tensor(hist_Y_ret, dtype=torch.float32)
     yk_t = torch.tensor(hist_Y_risk, dtype=torch.float32)
 
+    # Train/val split for early stopping (80/20, shared across ensemble members)
+    torch.manual_seed(config.RANDOM_SEED)
+    N = X_t.shape[0]
+    n_val = int(N * 0.2)
+    perm = torch.randperm(N)
+    val_idx = perm[:n_val]
+    tr_idx = perm[n_val:]
+    X_tr_t, X_val_t = X_t[tr_idx], X_t[val_idx]
+    yr_tr_t, yr_val_t = yr_t[tr_idx], yr_t[val_idx]
+    yk_tr_t, yk_val_t = yk_t[tr_idx], yk_t[val_idx]
+    print(f"  Train/val split: {X_tr_t.shape[0]:,}/{X_val_t.shape[0]:,} samples")
+
     arch = getattr(config, 'TRAINING_NN_ARCHITECTURE', [64, 32, 16])
     lr = getattr(config, 'TRAINING_LR', 0.0005)
     delta = getattr(config, 'TRAINING_HUBER_DELTA', 0.3)
@@ -404,23 +416,42 @@ def _historical_train_and_predict(tickers, D):
         model = nn.Sequential(*layers)
         opt = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
 
-        model.train()
-        best_loss = float('inf'); patience = 0
+        best_val = float('inf'); patience = 0
+        best_state = None
+        best_ep = 0
         for ep in range(epochs):
+            # Train step (dropout active)
+            model.train()
             opt.zero_grad()
-            out = model(X_t)
-            pred_ret = out[:, 0]
-            pred_risk = F.softplus(out[:, 1])
-            loss = F.huber_loss(pred_ret, yr_t, delta=delta) + F.huber_loss(pred_risk, yk_t, delta=delta)
-            if torch.isnan(loss): break
-            loss.backward(); opt.step()
-            if loss.item() < best_loss: best_loss = loss.item(); patience = 0
+            out = model(X_tr_t)
+            train_loss = F.huber_loss(out[:, 0], yr_tr_t, delta=delta) + \
+                         F.huber_loss(F.softplus(out[:, 1]), yk_tr_t, delta=delta)
+            if torch.isnan(train_loss): break
+            train_loss.backward(); opt.step()
+
+            # Val step (dropout off)
+            model.eval()
+            with torch.no_grad():
+                val_out = model(X_val_t)
+                val_loss = F.huber_loss(val_out[:, 0], yr_val_t, delta=delta) + \
+                           F.huber_loss(F.softplus(val_out[:, 1]), yk_val_t, delta=delta)
+                val_loss_item = val_loss.item()
+
+            if val_loss_item < best_val:
+                best_val = val_loss_item
+                best_state = {k: v.clone() for k, v in model.state_dict().items()}
+                best_ep = ep
+                patience = 0
             else:
                 patience += 1
-                if patience > 100: break
+                if patience > 50: break
+
+        # Restore best val-loss checkpoint
+        if best_state is not None:
+            model.load_state_dict(best_state)
 
         models.append(model)
-        print(f"    NN #{seed+1}: loss={best_loss:.6f}, epochs={ep+1}")
+        print(f"    NN #{seed+1}: val_loss={best_val:.6f} at epoch {best_ep+1}, stopped at {ep+1}")
 
     # Predict on CURRENT data
     print(f"\n  [1c] Predicting on current {len(tickers)} stocks...")
