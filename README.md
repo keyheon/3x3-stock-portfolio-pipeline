@@ -9,7 +9,7 @@ I come from a neuroscience / cognitive engineering / neuroimaging background, no
 1. **Screen the investment universe** (`screener.py`). Auto-discovers seeds from S&P 500 + NASDAQ-100 using GICS industry matching, combines with a small list of niche anchor tickers, and filters to ~84 stocks across 7 sectors (AI Compute, Neuromodulation, CNS Pharma, Digital Health, Space/Aerospace, Solar/Clean Energy, ETF benchmarks).
 2. **Collect sentiment** (`sentiment.py`). Four layers: news headlines via FinBERT, SEC EDGAR filings, FDA + ClinicalTrials.gov events, and earnings surprises. Produces 22 sentiment features per ticker.
 3. **Train on history** (`historical.py`, `training_universe.py`). Builds ~120K training samples from S&P 500 + NASDAQ-100 with 10 years of per-ticker snapshots, augmented with FRED macro series, Fama-French 5 factors, and cross-asset features (VIX, treasuries, gold, oil, USD). Trains an ensemble of 5 PyTorch networks with Huber loss.
-4. **Blend weights data-driven** (`blend_optimizer.py`). Finds the optimal mix of NN predictions and analyst consensus via a multi-window backtest (3m/6m/9m) with regime detection and bounded Bayesian shrinkage toward a prior.
+4. **Blend weights data-driven** (`blend_optimizer.py`). Finds the optimal mix of NN predictions and analyst consensus via a multi-window backtest (3m/6m/9m) with regime detection and bounded shrinkage toward a prior.
 5. **Select top 5** via a composite score that combines predicted Sharpe, MC Dropout confidence, uncertainty penalty, sentiment boost, and event-risk penalty.
 6. **Build the 3x3 allocation matrix** (`models.py`). A small neural network with a differentiable Sinkhorn layer that satisfies row (time horizon) and column (risk tier) marginal constraints, trained end-to-end with a Kahneman-Tversky asymmetric portfolio loss.
 7. **(Optional) Stratified K-Fold Portfolio Backtest** (`backtest.py`). Validates whether the model's picks actually outperform on unseen tickers. Ticker-axis K-fold (stratified by GICS sector) plus cross-sector transfer tests.
@@ -100,3 +100,26 @@ After a full run, `results/` contains:
 | E: ETF Benchmark | Training benchmarks only (excluded from selection) | fixed 4 |
 
 Anchor tickers are small/niche names that aren't in S&P 500 and therefore can't be auto-discovered. For any large-cap candidate, auto-discovery should find it — if it doesn't, that's usually a GICS classification issue worth investigating rather than patching with an anchor.
+
+## Future work
+
+The current pipeline uses a deep ensemble with MC Dropout, which is an
+approximate Bayesian method (Gal & Ghahramani, 2016) — the ensemble
+approximates posterior averaging and MC Dropout approximates variational
+inference. However, the shrinkage layer in `blend_optimizer.py` and the
+composite score use hand-picked coefficients rather than proper posterior
+inference.
+
+Planned upgrades:
+
+- **Uncertainty calibration**: verify that predicted standard deviations
+  actually match realized errors (calibration plots, temperature scaling
+  if needed, following Guo et al., 2017).
+- **Heteroscedastic output + aleatoric / epistemic decomposition**:
+  output `(mean, log_var)` pairs trained with negative log-likelihood
+  loss, following Kendall & Gal (2017). Separates irreducible market
+  noise from reducible model uncertainty — useful for portfolio selection.
+- **Hierarchical Bayesian structure over sectors**: sector-level priors
+  with ticker-level posteriors (analogous to multi-level GLM with
+  ROI-level random effects in fMRI analysis). Expected to improve
+  cross-sector transfer, which is currently weak (+0.027 rank corr).
