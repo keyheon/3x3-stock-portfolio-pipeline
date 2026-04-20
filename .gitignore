@@ -29,3 +29,7 @@ results/
 # Secrets / local config
 .env
 *.local
+
+# Log files (may contain API keys or sensitive output)
+*.log
+task*.log

@@ -72,7 +72,7 @@ def run_backtest(n_folds=5, n_select=5, verbose=True):
             print(f"  Fold {i+1}/{n_folds}")
 
         result = _run_single_fold(
-            X, Y_ret, Y_risk, sample_tickers,
+            X, Y_ret, Y_risk, sample_tickers, meta,
             train_tk, test_tk, n_select, verbose)
         fold_results.append(result)
 
@@ -223,7 +223,7 @@ def _stratified_kfold(tickers, ticker_sectors, n_folds):
 # SINGLE FOLD EXECUTION
 # ============================================================
 
-def _run_single_fold(X, Y_ret, Y_risk, sample_tickers,
+def _run_single_fold(X, Y_ret, Y_risk, sample_tickers, meta,
                      train_tickers, test_tickers, n_select, verbose):
     """Single fold: train -> predict -> evaluate."""
     import torch
@@ -419,7 +419,81 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers,
         select_sharpe = np.mean(actual_rets[top_idx]) / np.std(actual_rets[top_idx])
     else:
         select_sharpe = 0
+        
+    # 5. Baseline comparisons
+    # 5a. Random baseline: N=1000 random 5-ticker selections
+    np.random.seed(42)
+    n_random = 1000
+    random_alphas = np.zeros(n_random)
+    all_universe_mean = np.mean(actual_rets)
+    n_tickers_available = len(actual_rets)
+    for r in range(n_random):
+        sample_idx = np.random.choice(n_tickers_available, n_select, replace=False)
+        random_alphas[r] = np.mean(actual_rets[sample_idx]) - all_universe_mean
+    random_alpha_mean = np.mean(random_alphas)
+    random_alpha_std = np.std(random_alphas)
+    random_alpha_ci_lo = np.percentile(random_alphas, 2.5)
+    random_alpha_ci_hi = np.percentile(random_alphas, 97.5)
+    # Proportion of random trials that matched or exceeded our alpha → empirical p-value
+    random_p_value = np.mean(random_alphas >= selection_alpha)
 
+    # 5b. SPY baseline: does test universe include SPY-like ETFs?
+    etf_proxies = ['SPY', 'VOO', 'IVV']
+    spy_return = None
+    for etf in etf_proxies:
+        if etf in tickers_eval:
+            spy_idx = tickers_eval.index(etf)
+            spy_return = actual_rets[spy_idx]
+            break
+    spy_alpha = (top_actual - spy_return) if spy_return is not None else None
+
+    # 5c. Momentum baseline (time-split, no leakage):
+    # For each test ticker, sort its snapshots by date. Use first 50% as momentum
+    # signal (past returns), last 50% as realized returns. Pick top-5 by signal,
+    # measure alpha on realized.
+    test_meta_idx = np.where(test_mask)[0]
+    test_tk_sorted = {}  # ticker -> list of (snap_idx, Y_ret)
+    for local_i, global_i in enumerate(test_meta_idx):
+        tk = sample_tickers[global_i]
+        snap_idx = meta[global_i][1]  # meta is list of (ticker, snap_idx, date_str)
+        if tk not in test_tk_sorted:
+            test_tk_sorted[tk] = []
+        test_tk_sorted[tk].append((snap_idx, Y_ret_te[local_i]))
+
+    momentum_signal = np.zeros(len(tickers_eval))
+    momentum_realized = np.zeros(len(tickers_eval))
+    for i, tk in enumerate(tickers_eval):
+        samples = sorted(test_tk_sorted[tk])  # sort by snap_idx (ascending time)
+        n = len(samples)
+        if n >= 2:
+            half = n // 2
+            early_rets = [s[1] for s in samples[:half]]
+            late_rets = [s[1] for s in samples[half:]]
+            momentum_signal[i] = np.mean(early_rets)
+            momentum_realized[i] = np.mean(late_rets)
+        else:
+            momentum_signal[i] = samples[0][1]
+            momentum_realized[i] = samples[0][1]
+
+    universe_late_mean = np.mean(momentum_realized)
+    if len(momentum_signal) >= n_select:
+        momentum_top_idx = np.argsort(momentum_signal)[-n_select:]
+        momentum_return = np.mean(momentum_realized[momentum_top_idx])
+        momentum_alpha = momentum_return - universe_late_mean
+    else:
+        momentum_return = universe_late_mean
+        momentum_alpha = 0.0
+
+    # 5d. Equal-weight baseline: entire test universe (same as all_actual, for completeness)
+    equal_weight_return = all_universe_mean
+    equal_weight_alpha = 0.0  # by definition
+
+    # Our model's alpha vs each baseline
+    our_alpha = selection_alpha  # vs universe mean (existing)
+    alpha_vs_random_mean = our_alpha - random_alpha_mean
+    alpha_vs_momentum = top_actual - momentum_return
+    alpha_vs_spy = spy_alpha
+    
     result = {
         'n_train_tickers': len(train_tickers),
         'n_test_tickers': len(tickers_eval),
@@ -437,6 +511,19 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers,
         'beat_median': round(beat_median, 1),
         'select_sharpe': round(select_sharpe, 3),
         'top5_tickers': [tickers_eval[i] for i in top_idx] if len(top_idx) > 0 else [],
+        'baseline_random_alpha_mean': round(random_alpha_mean, 4),
+        'baseline_random_alpha_std': round(random_alpha_std, 4),
+        'baseline_random_alpha_ci_lo': round(random_alpha_ci_lo, 4),
+        'baseline_random_alpha_ci_hi': round(random_alpha_ci_hi, 4),
+        'baseline_random_p_value': round(random_p_value, 4),
+        'baseline_spy_return': round(spy_return, 4) if spy_return is not None else None,
+        'baseline_spy_alpha': round(spy_alpha, 4) if spy_alpha is not None else None,
+        'baseline_momentum_return': round(momentum_return, 4),
+        'baseline_momentum_alpha': round(momentum_alpha, 4),
+        'baseline_momentum_top5': [tickers_eval[i] for i in momentum_top_idx] if len(momentum_signal) >= n_select else [],
+        'alpha_vs_random_mean': round(alpha_vs_random_mean, 4),
+        'alpha_vs_momentum': round(alpha_vs_momentum, 4),
+        'alpha_vs_spy': round(alpha_vs_spy, 4) if alpha_vs_spy is not None else None,
     }
 
     if verbose:
@@ -450,7 +537,17 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers,
         if top_idx is not None and len(top_idx) > 0:
             top_names = [tickers_eval[i] for i in top_idx]
             print(f"    Top 5 picks:    {', '.join(top_names)}")
-
+        print(f"    ── Baselines ──")
+        print(f"    Random 5 (N=1000):  alpha={random_alpha_mean*100:+.1f}%p  "
+              f"95% CI [{random_alpha_ci_lo*100:+.1f}, {random_alpha_ci_hi*100:+.1f}]%p")
+        print(f"    Random p-value:     {random_p_value:.4f}  "
+              f"({'' if random_p_value < 0.05 else 'NOT '}significant at α=0.05)")
+        if spy_return is not None:
+            print(f"    SPY/VOO return:     {spy_return*100:+.1f}%  "
+                  f"(our alpha vs SPY: {spy_alpha*100:+.1f}%p)")
+        print(f"    Momentum top-5:     return={momentum_return*100:+.1f}%  "
+              f"alpha={momentum_alpha*100:+.1f}%p")
+        print(f"    Our alpha vs momentum: {alpha_vs_momentum*100:+.1f}%p")
     return result
 
 
