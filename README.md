@@ -82,13 +82,31 @@ The +15.4%p selection alpha is measured against the test-universe mean, but that
 
 The momentum comparison is the most informative: it tells you the NN's contribution *over and above* a trivial "past winners keep winning" heuristic, which is the first thing any skeptical reviewer would try.
 
+## Ablation study
+
+To characterize what each feature group contributes, I ran the backtest with three configurations. Results for each are stored in `results/backtest_results_{config}.json`:
+
+| Config | Features | Rank Corr | Alpha (5-fold avg) | Cross-sector Transfer |
+|--------|----------|-----------|--------------------|-----------------------|
+| Full (macro + sentiment) | 97 | +0.465 | +15.4%p | +0.028 |
+| No-macro (tech + sentiment) | 54 | **+0.526** | +15.4%p | **+0.219** |
+| Tech-only (technical only) | 54 | **+0.526** | +15.4%p | **+0.219** |
+
+Two findings were counter to my initial expectations.
+
+**Macro features hurt cross-sectional ticker ranking.** Removing the 43 macro features (FRED + Fama-French + cross-asset) *improved* rank correlation from +0.465 to +0.526 and cross-sector transfer from +0.028 to +0.219 — the latter roughly 8× higher. My interpretation: in a cross-sectional split, all tickers at a given snapshot share the same macro values, so macro features carry no inter-ticker signal — only noise that the ensemble partially overfits to. Note this is the opposite of what the Walk-Forward CV (time-axis) shows, where macro features reduce return error from 16.6%p to 11.9%p. The two CV schemes measure different things, and for portfolio *selection* (ticker ranking within a time period), the cross-sectional result is the one that matters.
+
+**Sentiment features don't move backtest metrics but do change the selection.** No-macro and tech-only produce identical backtest numbers by construction — sentiment features are computed only for the current 84 stocks at Stage 2 and are absent from the 527-ticker training cache. Their effect shows up in the top-5 picks instead: tech-only selects `BSX, MDT, MSFT, CRM, SYK`, while adding sentiment swaps SYK out for ADSK (ADSK had a positive news composite of +0.149). One swap out of five is a real but modest effect, and it's not measurable through backtest alpha with the current design.
+
+I haven't restructured the pipeline based on these findings. Macro features are still loaded by default because they're useful inside `blend_optimizer.py`'s regime gate for the Walk-Forward CV and weight-shrinkage logic. Isolating them there — rather than concatenating into the per-ticker feature vector — is in the Future work section.
+
 ## Known limitations
 
 - **Fold 1 outlier inflates the headline alpha.** SNDK's post-IPO run drives Fold 1 to an unusually high value; the robust estimate across Folds 2–5 is closer to +8.5%p. The aggregate number should be read with this in mind.
 - **Hyperparameters set by trial-and-error**, not systematic search. NN architecture, learning rate, epochs, and dropout are all manually chosen. Sensitivity to these choices is not characterized.
 - **No transaction cost, slippage, or tax modeling.** All backtest numbers are paper-alpha and will be lower after real-world frictions (typically several %p/year for monthly rebalancing strategies).
 - **Survivorship bias in the training universe.** Tickers are sampled from the current S&P 500 + NASDAQ-100 composition, so stocks that were delisted or removed from the index during the 10-year window are underrepresented. This biases the training distribution toward survivors.
-- **Composite score coefficients are hand-picked.** `sentiment_weight=0.10`, `fda_bonus=0.08`, `uncertainty_penalty=3.0`, `event_risk_penalty=2.0`. No ablation study characterizes their individual contribution.
+- **Composite score coefficients are hand-picked.** `sentiment_weight=0.10`, `uncertainty_penalty=3.0`, `event_risk_penalty=2.0` were not tuned via grid search. The ablation above measures sentiment as a feature group (one swap in top-5); individual coefficient sensitivity is still uncharacterized.
 - **No historical fundamentals.** yfinance doesn't expose past PE/ROE/analyst targets, so Stage 1 features are technical + macro only. Fundamentals enter only at Stage 2 via current analyst consensus.
 - **Sector concentration.** The selection step has no diversification constraint, so top 5 often cluster in 2 sectors (typically AI Compute + Neuromodulation). I currently accept this because the backtest shows rank-correlation is much stronger within-sector than across — forced diversification would pick lower-scoring stocks.
 - **yfinance rate limits.** Heavy S&P 500 batch downloads occasionally cause cross-asset fetches to return truncated history. The tz-safety fix in `training_universe.py` means this degrades gracefully, but ideally the macro loads should happen before the big batch.
@@ -140,3 +158,10 @@ Planned upgrades:
   with ticker-level posteriors (analogous to multi-level GLM with
   ROI-level random effects in fMRI analysis). Expected to improve
   cross-sector transfer, which is currently weak (+0.027 rank corr).
+- **Disentangle macro from the per-ticker feature matrix.** The ablation above
+  showed that macro features hurt cross-sectional rank correlation
+  (+0.465 → +0.526 when removed), because all tickers at a given snapshot
+  share identical macro values — the ensemble partially overfits to
+  time-synchronous signals that carry no inter-ticker information. A cleaner
+  design would route macro features through the blend-optimizer's regime gate
+  only, rather than concatenating them into each ticker's feature vector.

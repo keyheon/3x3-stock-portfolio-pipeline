@@ -77,6 +77,13 @@ FRED_API_KEY = ''                      # get a free key at https://fred.stlouisf
 # Training Universe
 TRAINING_USE_SP500 = True              # use full S&P 500 for training
 TRAINING_USE_NASDAQ100 = True          # also include NASDAQ-100
+
+# --- Ablation settings (Task #4) ---
+# Set these to False to exclude corresponding feature groups during training.
+# Used for ablation studies to measure each component's contribution.
+USE_MACRO_FEATURES = True      # FRED (13) + Fama-French (15) + cross-asset (15)
+USE_SENTIMENT_FEATURES = True  # FinBERT + SEC + FDA + earnings (22 features)
+
 TRAINING_PERIOD = '10y'                # training data period
 TRAINING_SNAPSHOT_INTERVAL = 10        # snapshot interval (trading days)
 TRAINING_NN_ARCHITECTURE = [64, 32, 16]  # hidden layers

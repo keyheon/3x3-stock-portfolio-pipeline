@@ -109,6 +109,15 @@ def _load_macro_data():
     if _MACRO_DF is not None:
         return
 
+    # [Ablation] respect USE_MACRO_FEATURES flag — skip all macro loading if disabled
+    try:
+        import config
+        if not getattr(config, 'USE_MACRO_FEATURES', True):
+            print("  [Ablation] Macro features DISABLED by config.USE_MACRO_FEATURES=False")
+            return
+    except Exception:
+        pass
+
     try:
         import config
         fred_key = getattr(config, 'FRED_API_KEY', '')

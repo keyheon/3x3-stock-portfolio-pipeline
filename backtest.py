@@ -783,12 +783,30 @@ def _aggregate_and_report(fold_results, cross_sector, verbose):
 
 
 def _save_results(report):
-    """Save backtest results as JSON."""
+    """Save backtest results as JSON, with ablation tag in filename."""
     import json
+    import config
     os.makedirs('results', exist_ok=True)
+
+    # [Ablation] Tag filename by config
+    use_macro = getattr(config, 'USE_MACRO_FEATURES', True)
+    use_sent = getattr(config, 'USE_SENTIMENT_FEATURES', True)
+    if use_macro and use_sent:
+        tag = 'full'
+    elif not use_macro and not use_sent:
+        tag = 'tech_only'
+    elif not use_macro:
+        tag = 'no_macro'
+    elif not use_sent:
+        tag = 'no_sent'
+    else:
+        tag = 'unknown'
 
     # Clean for JSON serialization
     save = {
+        'ablation_config': tag,
+        'use_macro_features': use_macro,
+        'use_sentiment_features': use_sent,
         'n_folds': report['n_folds'],
         'aggregate': report['aggregate'],
         'std': report['std'],
@@ -797,10 +815,15 @@ def _save_results(report):
         'cross_sector': report['cross_sector'],
     }
 
-    path = os.path.join('results', 'backtest_results.json')
-    with open(path, 'w') as f:
+    # Save both with tag (for ablation history) and default (latest)
+    path_tagged = os.path.join('results', f'backtest_results_{tag}.json')
+    path_default = os.path.join('results', 'backtest_results.json')
+    with open(path_tagged, 'w') as f:
         json.dump(save, f, indent=2, default=str)
-    print(f"  Saved to {path}")
+    with open(path_default, 'w') as f:
+        json.dump(save, f, indent=2, default=str)
+    print(f"  Saved: {path_tagged}")
+    print(f"  Saved: {path_default} (latest)")
 
 
 # ============================================================

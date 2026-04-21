@@ -18,11 +18,22 @@ def main():
     use_screen = '--screen' in args or '--auto-screen' in args
     use_sent = '--sent' in args or '--sentiment' in args
     no_sent = '--no-sent' in args
+    no_macro = '--no-macro' in args       # [Ablation] disable FRED + FF + cross-asset
+    tech_only = '--tech-only' in args     # [Ablation] disable both macro and sentiment
     run_backtest = '--backtest' in args
     custom_tickers = None
     if '--tickers' in args:
         idx = args.index('--tickers')
         custom_tickers = [t.upper() for t in args[idx+1:] if not t.startswith('--')]
+
+    # [Ablation] Apply feature-group disable flags to config
+    if tech_only:
+        no_macro = True
+        no_sent = True
+        use_sent = False
+    if no_macro:
+        config.USE_MACRO_FEATURES = False
+    config.USE_SENTIMENT_FEATURES = bool(use_sent and not no_sent)
 
     # Standalone backtest mode
     if run_backtest and not use_screen:
