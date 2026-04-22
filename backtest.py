@@ -24,7 +24,7 @@ Design:
 import numpy as np
 import time
 import os
-
+import config
 
 def run_backtest(n_folds=5, n_select=5, verbose=True):
     """
@@ -263,8 +263,8 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers, meta,
     if verbose:
         print(f"    Features: {X_tr_sel.shape[1]} selected")
 
-    # Train ensemble (3 models for speed)
-    n_ensemble = 3
+    # Train ensemble
+    n_ensemble = config.N_ENSEMBLE
     models = []
     D = X_tr_n.shape[1]
 
