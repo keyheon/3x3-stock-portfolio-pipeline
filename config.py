@@ -90,3 +90,7 @@ TRAINING_NN_ARCHITECTURE = [64, 32, 16]  # hidden layers
 TRAINING_EPOCHS = 800
 TRAINING_LR = 0.0005
 TRAINING_HUBER_DELTA = 0.3
+
+# Feature selection thresholds (tunable by Optuna)
+VAR_THRESHOLD = 0.01
+CORR_THRESHOLD = 0.05

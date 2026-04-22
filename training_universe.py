@@ -15,7 +15,8 @@ Usage:
         tickers=tickers, period="10y", snapshot_interval=10
     )
 """
-
+import socket
+socket.setdefaulttimeout(120)  # [v2.3.4] fredapi has no built-in timeout; also helps yfinance stalls
 import warnings
 import time
 warnings.filterwarnings('ignore')

@@ -243,14 +243,18 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers, meta,
         print(f"    Train: {X_tr.shape[0]:,} samples, Test: {X_te.shape[0]:,} samples")
 
     # Feature selection + normalization (on train only)
+    var_thr = getattr(config, 'VAR_THRESHOLD', 0.01)
+    corr_thr = getattr(config, 'CORR_THRESHOLD', 0.05)
     var = np.var(X_tr, axis=0)
-    keep = var > 0.01
+    keep = var > var_thr
     corr_with_ret = np.array([
         abs(np.corrcoef(X_tr[:, j], Y_ret_tr)[0, 1])
         if np.std(X_tr[:, j]) > 1e-10 else 0
         for j in range(X_tr.shape[1])
     ])
-    keep = keep & (corr_with_ret > 0.05)
+    keep = keep & (corr_with_ret > corr_thr)
+    if keep.sum() < 10:
+        keep = var > var_thr
 
     X_tr_sel = X_tr[:, keep]
     X_te_sel = X_te[:, keep]

@@ -384,8 +384,10 @@ def _historical_train_and_predict(tickers, D):
     feat_corr = np.array([abs(np.corrcoef(hist_X[:,d], hist_Y_ret)[0,1])
                           if np.std(hist_X[:,d]) > 1e-8 else 0
                           for d in range(hist_X.shape[1])])
-    keep = (feat_var > 0.01) & (feat_corr > 0.05)
-    if keep.sum() < 10: keep = feat_var > 0.01
+    var_thr = getattr(config, 'VAR_THRESHOLD', 0.01)
+    corr_thr = getattr(config, 'CORR_THRESHOLD', 0.05)
+    keep = (feat_var > var_thr) & (feat_corr > corr_thr)
+    if keep.sum() < 10: keep = feat_var > var_thr
 
     hist_X_sel = hist_X[:, keep]
     mu = hist_X_sel.mean(0); sigma = hist_X_sel.std(0) + 1e-8
