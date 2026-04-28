@@ -291,7 +291,7 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers, meta,
 
     lr = getattr(config, 'TRAINING_LR', 0.0005)
     delta = getattr(config, 'TRAINING_HUBER_DELTA', 0.3)
-    epochs = min(getattr(config, 'TRAINING_EPOCHS', 800), 500)  # capped for speed
+    epochs = getattr(config, 'TRAINING_EPOCHS', 800)  # use config value directly
 
     for e in range(n_ensemble):
         torch.manual_seed(42 + e * 17)

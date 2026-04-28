@@ -86,11 +86,14 @@ USE_SENTIMENT_FEATURES = True  # FinBERT + SEC + FDA + earnings (22 features)
 
 TRAINING_PERIOD = '10y'                # training data period
 TRAINING_SNAPSHOT_INTERVAL = 10        # snapshot interval (trading days)
-TRAINING_NN_ARCHITECTURE = [64, 32, 16]  # hidden layers
-TRAINING_EPOCHS = 800
-TRAINING_LR = 0.0005
-TRAINING_HUBER_DELTA = 0.3
+# Optuna Stage 1 Trial #58 best (v2.3.7 production)
+# 60-trial TPE search; best rank_corr 0.5616 (4-fold layout, N=5 ensemble)
+TRAINING_NN_ARCHITECTURE = [64, 32, 16]  # 'medium' (Optuna best)
+TRAINING_EPOCHS = 5000
+TRAINING_LR = 0.00024955280836145015           # ~2.5e-4
+TRAINING_WEIGHT_DECAY = 0.00016413025522015487  # ~1.64e-4
+TRAINING_HUBER_DELTA = 0.5
 
-# Feature selection thresholds (tunable by Optuna)
-VAR_THRESHOLD = 0.01
-CORR_THRESHOLD = 0.05
+# Feature selection thresholds (Optuna best)
+VAR_THRESHOLD = 0.001971224419059394             # ~0.00197
+CORR_THRESHOLD = 0.0837536123288791              # ~0.0838
