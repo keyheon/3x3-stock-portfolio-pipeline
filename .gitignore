@@ -33,3 +33,6 @@ results/
 # Log files (may contain API keys or sensitive output)
 *.log
 task*.log
+optuna_storage.db
+optuna_stage1.log
+optuna_smoke.db
