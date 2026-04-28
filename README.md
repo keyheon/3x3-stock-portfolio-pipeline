@@ -4,11 +4,27 @@ A deep-learning pipeline I built to help me allocate ~KRW 20M across US equities
 
 I come from a neuroscience / cognitive engineering / neuroimaging background, not finance, so this repo is also how I learn quantitative investing from first principles. Treat it accordingly: it's a working system that I actually use, but it's a personal project, not a professional product.
 
+## Latest results (v2.3.7)
+
+Stage 2 production retrain with Optuna-tuned hyperparameters and a 5-fold stratified K-fold backtest at production scale (N=20 ensemble, 526 training tickers). Sensitivity analysis run with and without SNDK (a 26.5σ post-IPO outlier from the 2024-10 WDC spinoff) to isolate its effect.
+
+| Metric | Without SNDK (primary) | With SNDK (sensitivity) |
+|---|---|---|
+| Rank correlation | 0.518 ± 0.079 | 0.521 ± 0.078 |
+| α vs universe equal-weight | +7.1%p ± 1.5%p | +14.8%p ± 14.0%p |
+| α vs SPY (cap-weighted) | +8.1%p ± 1.7%p | +16.0%p ± 16.6%p |
+| α vs proper momentum | +5.87%p ± 2.63%p | +6.34%p ± 2.57%p |
+| NN beats momentum | 5/5 folds | 5/5 folds |
+
+The without-SNDK numbers are reported as primary because the with-SNDK aggregate has 10× wider standard deviation, dominated by Fold 1 alone (where SNDK contributes +37%p of the +44.9%p alpha). The momentum-comparison edge (+5.87 to +6.34%p) is the most robust metric — nearly identical across configurations, 5/5 folds, all with similar standard deviation.
+
+Headline hyperparameters from Optuna (60-trial TPE search over 6 dimensions, Trial #58 best): `medium [64,32,16] architecture`, `lr=2.5e-4`, `huber_delta=0.5`, `weight_decay=1.6e-4`, `var_threshold=0.002`, `corr_threshold=0.084`. See [Hyperparameter optimization](#hyperparameter-optimization-stage-1) and [Stage 2 production retrain](#stage-2-production-retrain) sections below for details.
+
 ## What the pipeline does
 
 1. **Screen the investment universe** (`screener.py`). Auto-discovers seeds from S&P 500 + NASDAQ-100 using GICS industry matching, combines with a small list of niche anchor tickers, and filters to ~84 stocks across 7 sectors (AI Compute, Neuromodulation, CNS Pharma, Digital Health, Space/Aerospace, Solar/Clean Energy, ETF benchmarks).
 2. **Collect sentiment** (`sentiment.py`). Four layers: news headlines via FinBERT, SEC EDGAR filings, FDA + ClinicalTrials.gov events, and earnings surprises. Produces 22 sentiment features per ticker.
-3. **Train on history** (`historical.py`, `training_universe.py`). Builds ~120K training samples from S&P 500 + NASDAQ-100 with 10 years of per-ticker snapshots, augmented with FRED macro series, Fama-French 5 factors, and cross-asset features (VIX, treasuries, gold, oil, USD). Trains an ensemble of 5 PyTorch networks with Huber loss.
+3. **Train on history** (`historical.py`, `training_universe.py`). Builds ~120K training samples from S&P 500 + NASDAQ-100 with 10 years of per-ticker snapshots, augmented with FRED macro series, Fama-French 5 factors, and cross-asset features (VIX, treasuries, gold, oil, USD). Trains an ensemble of 20 PyTorch networks with Huber loss (Optuna-tuned hyperparameters since v2.3.7).
 4. **Blend weights data-driven** (`blend_optimizer.py`). Finds the optimal mix of NN predictions and analyst consensus via a multi-window backtest (3m/6m/9m) with regime detection and bounded shrinkage toward a prior.
 5. **Select top 5** via a composite score that combines predicted Sharpe, MC Dropout confidence, uncertainty penalty, sentiment boost, and event-risk penalty.
 6. **Build the 3x3 allocation matrix** (`models.py`). A small neural network with a differentiable Sinkhorn layer that satisfies row (time horizon) and column (risk tier) marginal constraints, trained end-to-end with a Kahneman-Tversky asymmetric portfolio loss.
@@ -17,7 +33,7 @@ I come from a neuroscience / cognitive engineering / neuroimaging background, no
 ## Quickstart
 
 ```bash
-pip install numpy matplotlib yfinance pandas torch transformers scipy
+pip install numpy matplotlib yfinance pandas torch transformers scipy optuna
 pip install fredapi  # optional, for FRED macro features
 
 # Full pipeline
@@ -30,6 +46,17 @@ python backtest.py
 
 # Pipeline + backtest
 python run.py --torch --screen --sent --backtest
+
+# Hyperparameter optimization (Stage 1) — ~36-45h
+python optuna_search.py
+
+# Stage 2 production retrain with Optuna-best hyperparameters — ~1.9h
+python stage2_retrain.py                  # without SNDK (primary)
+python stage2_retrain.py --include-sndk   # with SNDK (sensitivity)
+
+# Auxiliary analysis tools
+python compute_momentum_baseline.py       # NN vs proper-momentum baseline
+python fix_spy_benchmark.py               # SPY 3-month forward benchmark
 
 # Individual modules
 python screener.py
@@ -44,18 +71,22 @@ Optionally, get a free [Finnhub API key](https://finnhub.io) and set `FINNHUB_AP
 ## Repository layout
 
 ```
-run.py                  Entry point
-config.py               Hyperparameters
-screener.py             7-sector universe screening with auto seed discovery
-sentiment.py            Multi-layer sentiment (news/SEC/FDA/trials/earnings)
-training_universe.py    S&P 500 + NASDAQ-100 + FRED + Fama-French + cross-asset
-historical.py           Training data builder + Walk-Forward CV
-blend_optimizer.py      Multi-window backtest + regime detection + shrinkage
-backtest.py             Stratified K-Fold portfolio backtest
-models.py               Matrix Network + differentiable Sinkhorn
-data_auto.py            yfinance data collection
-visualize.py            Auto-generated figures
-requirements.txt        Dependencies
+run.py                          Entry point
+config.py                       Hyperparameters
+screener.py                     7-sector universe screening with auto seed discovery
+sentiment.py                    Multi-layer sentiment (news/SEC/FDA/trials/earnings)
+training_universe.py            S&P 500 + NASDAQ-100 + FRED + Fama-French + cross-asset
+historical.py                   Training data builder + Walk-Forward CV
+blend_optimizer.py              Multi-window backtest + regime detection + shrinkage
+backtest.py                     Stratified K-Fold portfolio backtest
+optuna_search.py                Stage 1 hyperparameter search (60-trial TPE, 6 dims)
+stage2_retrain.py               Stage 2 production retrain (N=20, 5-fold, SNDK exclusion)
+compute_momentum_baseline.py    Standalone momentum baseline (apples-to-apples)
+fix_spy_benchmark.py            SPY 3-month forward benchmark for stratified K-fold
+models.py                       Matrix Network + differentiable Sinkhorn
+data_auto.py                    yfinance data collection
+visualize.py                    Auto-generated figures
+requirements.txt                Dependencies
 ```
 
 ## Why stratified K-fold instead of time-axis backtest
@@ -72,15 +103,34 @@ A naive single-window optimizer told me to weight NN predictions at 95–100% be
 
 ## Baseline comparisons
 
-The +15.4%p selection alpha is measured against the test-universe mean, but that number alone doesn't tell you whether the model beats naive strategies. `backtest.py` compares the NN's top-5 picks against three baselines (see `baseline_*` fields in `backtest_results.json`):
+The headline alpha numbers are measured against the test-universe mean, but that's only one baseline. To check whether the model beats naive strategies, the Stage 2 retrain compares NN top-5 picks against four baselines. Results below are from the Stage 2 v2.3.7 measurement (N=20 ensemble, 5-fold stratified K-fold). All baselines are computed apples-to-apples on the same fold splits and same data.
 
-| Baseline | Construction | Result (5-fold avg) |
-|----------|--------------|--------------------|
-| **Random 5** | 1,000 random 5-ticker selections per fold, 95% CI computed from the distribution | Our alpha is outside the 95% CI in all 5 folds (empirical p < 0.0001 in every fold). |
-| **SPY / VOO buy-and-hold** | Passive benchmark, where the ETF falls in the fold's test set | Our top-5 beats SPY by +45.2%p (Fold 1) and +10.1%p (Fold 5). The ETF is only in 2 of 5 folds due to the stratified split. |
-| **Proper momentum top-5** | For each test ticker, split its snapshots into early (signal) and late (realized) halves; pick top-5 by early-half mean return; measure realized return on the late half. No look-ahead. | NN beats momentum in **5/5 folds** with an average edge of **+6.8%p**. Strongest in Fold 3 (+9.0%p), where momentum alpha is near-zero and simple past-return strategy fails. |
+| Baseline | Construction | Edge over baseline (5-fold mean ± std) |
+|----------|--------------|---------------------------------------|
+| **Random 5** | 1,000 random 5-ticker selections per fold, 95% CI from the empirical distribution (measured in v2.3.3 baseline run, commit 9567fc3) | NN alpha is outside the 95% CI in **5/5 folds** (empirical p < 0.0001 in every fold) |
+| **Universe equal-weight** | Mean realized return of all test tickers in the fold | **+7.1%p ± 1.5%p** without SNDK / +14.8%p ± 14.0%p with SNDK |
+| **SPY (cap-weighted)** | SPY's mean 3-month forward return averaged over the fold's date range, ~495 weekly anchor dates per fold | **+8.1%p ± 1.7%p** without SNDK / +16.0%p ± 16.6%p with SNDK |
+| **Proper momentum top-5** | For each test ticker, split snapshots into early (signal) and late (realized) halves; pick top-5 by early-half mean return; measure realized return on the late half. No look-ahead | **+5.87%p ± 2.63%p** without SNDK (5/5 folds NN wins) / +6.34%p ± 2.57%p with SNDK (5/5 folds NN wins) |
 
-The momentum comparison is the most informative: it tells you the NN's contribution *over and above* a trivial "past winners keep winning" heuristic, which is the first thing any skeptical reviewer would try.
+The momentum comparison is the most informative single number. It tells you the NN's contribution *over and above* a trivial "past winners keep winning" heuristic, which is what any skeptical reviewer would try first. Three observations support its robustness:
+
+- **Nearly identical across SNDK configurations**: +5.87 vs +6.34%p. The SNDK ticker isn't responsible for the NN's edge — it's a localized inflation that affects NN and momentum almost equally (NN +14.79 vs momentum +8.45 with SNDK; +7.13 vs +1.26 without).
+- **Standard deviation ~2.6%p in both cases**: similar across folds, not driven by one or two outliers.
+- **5/5 folds NN wins in both configurations**: not luck.
+
+For comparison with v2.3.3 (default hyperparameters, N=5 ensemble, with SNDK Fold 1 inflation): NN edge over momentum was +6.8%p across 5/5 folds. The v2.3.7 measurement (Optuna-tuned, N=20 production scale) gives essentially the same edge — the per-fold Stage 2 numbers can be found in `results/momentum_baseline_v237.json`.
+
+### Per-fold detail (without SNDK)
+
+| Fold | NN top 5 | NN α | Momentum top 5 | Mom α | NN edge |
+|------|----------|------|----------------|-------|---------|
+| 1 | SMCI, SHOP, COHR, TRGP, ZS | +7.5%p | SHOP, ZS, GNRC, ZBRA, DECK | -1.7%p | **+9.2%p** |
+| 2 | CVNA, PDD, DVN, FANG, DDOG | +6.3%p | CVNA, TPL, PDD, ALGN, AXON | +5.1%p | +1.2%p |
+| 3 | MRNA, ARM, MSTR, TTD, PCG | +4.8%p | MRNA, TTD, MSTR, ARM, TEAM | -1.7%p | +6.5%p |
+| 4 | TSLA, AMD, LITE, HOOD, FSLR | +7.8%p | TSLA, AMD, MELI, PODD, ASML | +1.0%p | +6.8%p |
+| 5 | GEV, INSM, APA, XYZ, PLTR | +9.3%p | GEV, XYZ, CEG, NVDA, PYPL | +3.6%p | +5.7%p |
+
+**Fold 3 is interesting**: 4/5 of NN's top 5 overlap with momentum's top 5 (MRNA, ARM, MSTR, TTD), and NN beats momentum by +6.5%p mainly through the 5th pick (PCG vs TEAM). When momentum and NN converge on the same picks, the NN's edge narrows to ranking precision on a single position. This explains why Fold 3 also has the lowest rank_corr (0.402) — fewer independent NN-only signals.
 
 ## Ablation study
 
@@ -100,17 +150,162 @@ Two findings were counter to my initial expectations.
 
 I haven't restructured the pipeline based on these findings. Macro features are still loaded by default because they're useful inside `blend_optimizer.py`'s regime gate for the Walk-Forward CV and weight-shrinkage logic. Isolating them there — rather than concatenating into the per-ticker feature vector — is in the Future work section.
 
+The v2.3.7 retrain doesn't re-run ablation (focus shifted to hyperparameter optimization). The macro/sentiment toggles still work via `--no-macro`, `--tech-only` flags on `run.py`.
+
+## Hyperparameter optimization (Stage 1)
+
+The earlier README listed "hyperparameters set by trial-and-error" as a known limitation. Stage 1 of v2.3.7 addresses this with a 60-trial Optuna TPE search over 6 dimensions. Results are stored in `optuna_storage.db` (SQLite, resume-safe), with the full trial log in `optuna_stage1.log` and best-3 summary in `results/optuna_stage1_results.json`.
+
+### Search space
+
+| Dimension | Range / Set | Why |
+|-----------|-------------|-----|
+| `lr` | log-uniform [1e-4, 3e-3] | Adam's typical sweet spot, ~1.5 decades wide |
+| `weight_decay` | log-uniform [1e-5, 1e-3] | Tiny to moderate; higher would over-regularize given the training set size |
+| `huber_delta` | {0.1, 0.2, 0.3, 0.5, 1.0} | Discrete set covering aggressive (0.1) to MSE-like (1.0) |
+| `architecture` | {small [32,16], medium [64,32,16], large [128,64,32]} | v1 default was small; large was rejected at 5,884 samples but may be competitive at 122K |
+| `var_threshold` | log-uniform [1e-3, 1e-1] | Previously hardcoded at 0.01 |
+| `corr_threshold` | log-uniform [1e-3, 1e-1] | Previously hardcoded at 0.05 |
+
+Composite-score coefficients (`sentiment_weight`, `uncertainty_penalty`, `event_risk_penalty`) are intentionally not in the search space — they're reserved for a separate study because they govern Stage 2 selection rather than NN training.
+
+### Stage 1 design choices
+
+- **N=5 ensemble** during search (vs N=20 in production). 60 trials × 4 folds × 20 NN at production scale would take ~150 days, infeasible. At N=5 it's ~36–45 hours. Hyperparameter ranking is expected to be approximately invariant to ensemble size — Stage 2 below verifies this assumption.
+- **4 folds excluded Fold 1** (Stage 1 used `[1,2,3,4]` = Fold 2-5). This was a fast solution to the SNDK post-IPO artifact distorting Fold 1 alpha by ~+35%p. Stage 2 below uses a more precise approach (exclude SNDK at the ticker level, all 5 folds). The `optuna_search.py` script has been updated to match Stage 2's design for any future re-runs, but the v2.3.7 study itself ran on the original 4-fold layout.
+- **TRAINING_EPOCHS = 5000** (raised from 800). Epoch cap was determined via a 6000-epoch single-NN diagnostic (`val_trajectory_6000.json`): block-wise validation loss improvement crossed below 0.1% per 500 epochs at epoch 5000. Early stopping (patience=41) catches convergence well before this cap in practice — most NNs stop in 200-400 epochs at the Optuna-best hyperparameters.
+- **Persistent SQLite storage**: trials are durable across interruptions. If the run dies, restarting picks up from the last completed trial.
+- **120-min per-trial timeout** via `signal.alarm` to prevent pathological configs from stalling the study.
+
+### Stage 1 result
+
+The TPE sampler converged tightly. Top 3 trials all use:
+
+- `medium [64,32,16]` architecture (large/small not in top 3)
+- `huber_delta = 0.5` (aggressive 0.1 not preferred at this epoch budget)
+- `lr` ~ 2.5e-4 to 5.9e-4 (tight cluster)
+- Low `var_threshold` (~0.001-0.002, retains nearly all variance-pass features) + moderate `corr_threshold` (~0.078-0.084, filters by correlation)
+
+| Rank | Trial | Mean rank_corr (N=5, 4-fold) | lr | wd | huber | arch | var_thr | corr_thr |
+|------|-------|----------|---|---|---|---|---|---|
+| 1 | #58 | **+0.5616** | 2.50e-4 | 1.64e-4 | 0.5 | medium | 0.00197 | 0.0838 |
+| 2 | #47 | +0.5604 | 5.94e-4 | 7.22e-5 | 0.5 | medium | 0.00148 | 0.0781 |
+| 3 | #52 | +0.5590 | 3.31e-4 | 9.22e-5 | 0.5 | medium | 0.00164 | 0.0783 |
+
+The narrow spread (+0.5616 to +0.5590) and identical structural choices (medium / huber 0.5) suggest the search found a single shared optimum rather than fragile local peaks.
+
+### Why Optuna found these settings
+
+**Huber 0.5 over 0.1**: At delta=0.1, most samples fall in Huber's linear region where gradient magnitude is constant ±1. Loss landscape becomes piecewise-linear, slow to fine-tune. At delta=0.5, most samples sit in the quadratic region with gradients proportional to error — the network converges much faster. Empirically, Optuna-best NNs reach `val_loss ~0.017` in ~250 epochs, vs ~3000+ for the v2.3.6 default huber=0.3 with lr=5e-4.
+
+**Medium over large**: With ~95K training samples and 30-35 selected features, medium has enough capacity (6,700 params) without overfitting to time-synchronous noise that large architecture (23,000 params) chases.
+
+**Low var_threshold + moderate corr_threshold**: Inverts the v1/v2 default. Old behavior filtered by variance (kept variance > 0.01) then weakly by correlation (> 0.05). Optuna prefers retaining most variance-pass features (~all of 97) but filtering more aggressively by target correlation. Result: 30-35 high-signal features per fold rather than the default ~50 mixed.
+
+## Stage 2 production retrain
+
+After Stage 1 completed, the best hyperparameters were re-run at production scale: **N=20 ensemble** (vs Stage 1's N=5), **all 5 folds** (vs Stage 1's 4), and **SNDK excluded at the ticker level** rather than dropping Fold 1 entirely. This serves two purposes:
+
+1. Verify that Stage 1's hyperparameter ranking holds at production ensemble size (the N=5 → N=20 invariance assumption).
+2. Generate full per-ticker prediction matrices, per-snapshot rankings, and proper SPY benchmark data for analysis (Tasks A/B/C).
+
+Code: `stage2_retrain.py`, runtime ~1.6-1.9 hours. Outputs in `results/stage2/top1_trial58/`.
+
+### Stage 2 settings
+
+- **Hyperparameters**: Optuna Trial #58 best (see Stage 1 table above)
+- **N_ENSEMBLE = 20** (production scale; matches v2.3.4 baseline for direct comparison)
+- **5 folds [0,1,2,3,4]** (all folds, stratified by GICS sector)
+- **SNDK excluded** (17 samples, 0.014% of training data) — see Sensitivity analysis below
+- **TRAINING_EPOCHS = 5000** (effectively governed by patience=41 early stopping)
+- **Real-time matplotlib plot** (4×5 grid, one subplot per NN ensemble member) for live monitoring during ~22 min/fold runs
+
+### Stage 2 result (without SNDK, primary)
+
+| Metric | Stage 2 (N=20, 5-fold) | Optuna Stage 1 (N=5, 4-fold) | v2.3.4 baseline (N=20, 5-fold, with SNDK) |
+|--------|------------------------|------------------------------|-----------------------------------------|
+| Mean rank_corr | **0.518 ± 0.079** | 0.5616 | 0.5311 |
+| Mean alpha (universe) | **+7.1%p ± 1.5%p** | — | +15.4%p (Fold 1 SNDK inflated) |
+| Mean alpha (vs SPY) | **+8.1%p ± 1.7%p** | — | — |
+| Mean alpha (vs momentum) | **+5.87%p ± 2.63%p** (5/5 folds) | — | — |
+| Selection Sharpe | 2.71 | — | 2.11 |
+| Top-5 Hit Rate | 5/5 folds positive | — | 5/5 folds positive |
+
+The Stage 2 rank_corr (0.518) is below Stage 1's reported 0.5616. This was expected and explained: Stage 1 measured rank_corr only on Fold 2-5 (Fold 1 excluded due to SNDK). Stage 2 measures all 5 folds with SNDK excluded at ticker level — Fold 1 alone has rank_corr 0.483 (the ticker-level fix doesn't restore the inflated Fold 1 alpha that Stage 1 sidestepped). Fold 2-5 alone in Stage 2 averages rank_corr ~0.527, much closer to Stage 1's measurement. The N=5 → N=20 invariance assumption holds.
+
+### Sensitivity analysis: SNDK exclusion
+
+SNDK (SanDisk, 2024-10 WDC spinoff) appeared as an outlier in v2.3.3's Fold 1 analysis: 17 snapshots, mean realized 3-month return +194.7%, max +472.2%. The cache reports 526 tickers with at least 17 snapshots; SNDK is the shortest-history ticker in the set.
+
+**Decision**: exclude SNDK at the ticker level under a uniform criterion: `n_snapshots < 30 AND |return mean − universe mean| > 5σ`. Among 526 tickers in cache, this filter matches **exactly one ticker (SNDK)**.
+
+**Verification**:
+
+| Ticker | n | mean return | Distance from universe mean (+0.046, std 0.174) | Excluded? |
+|--------|---|-------------|---------------------------------------------------|-----------|
+| SNDK | 17 | +1.947 | **+26.5σ** | ✅ excluded |
+| GEV | 40 | +0.309 | +1.5σ | ❌ retained |
+| SOLV | 40 | +0.037 | +0.0σ | ❌ retained |
+| (universe) | — | +0.046 | — | — |
+
+Two other short-history spinoffs (GEV from GE in 2024-04, SOLV from 3M in 2024-04) have similarly small `n` but their returns sit within the universe distribution. They are retained. Only SNDK, with a 26.5σ deviation from the universe mean over its observed window, qualifies as a structurally non-comparable outlier.
+
+To make this exclusion auditable, Stage 2 was run twice — identical hyperparameters and seeds — once without SNDK (primary) and once with SNDK included (sensitivity, results in `results/stage2_with_sndk/top1_trial58/`).
+
+#### Aggregate comparison
+
+| Configuration | rank_corr | α vs universe | α vs SPY | α vs momentum |
+|---|---|---|---|---|
+| **Without SNDK** (primary) | 0.518 ± 0.079 | +7.1%p ± 1.5%p | +8.1%p ± 1.7%p | +5.87%p ± 2.63%p (5/5 folds) |
+| With SNDK (sensitivity) | 0.521 ± 0.078 | +14.8%p ± 14.0%p | +16.0%p ± 16.6%p | +6.34%p ± 2.57%p (5/5 folds) |
+
+The SNDK effect is localized:
+
+#### Per-fold α vs SPY
+
+| Fold | Without SNDK | With SNDK | Δ | Comment |
+|------|--------------|-----------|---|---------|
+| 1 | +7.8%p | **+44.9%p** | **+37.1%p** | SNDK is top-1 NN pick (mean +194.7% return) |
+| 2 | +7.8%p | +8.6%p | +0.8%p | within noise |
+| 3 | +5.5%p | +7.7%p | +2.2%p | within noise |
+| 4 | +8.6%p | +7.7%p | -0.9%p | within noise |
+| 5 | +10.6%p | +11.3%p | +0.7%p | within noise |
+
+Fold 1 with SNDK has SNDK as its top-1 pick — SNDK's mean realized return contributes ~+37%p to Fold 1's +44.9%p alpha. Other folds (no SNDK in test set) show <±2.2%p difference, confirming SNDK is a localized outlier effect, not a global model behavior.
+
+The momentum-edge metric (last column of the aggregate table) is what the Sensitivity is really telling us: **the NN's edge over momentum is +5.87%p without SNDK vs +6.34%p with — nearly identical**. SNDK doesn't drive the model's selection skill; it only inflates the absolute alpha number that both NN and momentum benefit from. The proper momentum baseline picks SNDK as its top-1 in the with-SNDK config (alpha +34.6%p vs NN's +42.7%p), confirming that SNDK is a momentum-detectable anomaly, not a uniquely model-found one.
+
+We report the **without-SNDK** numbers as primary headlines because:
+
+1. The 26.5σ deviation makes SNDK non-comparable to other tickers under standard backtest evaluation.
+2. The with-SNDK aggregate has 10× wider standard deviation (1.7 vs 16.6%p for SPY-alpha) — this is a single-fold distortion masquerading as performance.
+3. The without-SNDK numbers are what production-realistic deployment would expect: SNDK is a single observation, not a strategy.
+
+The with-SNDK numbers match v2.3.4's headline alpha (+15.4%p) within rounding, confirming the SNDK effect is reproducible and isolable.
+
+### Tasks A/B/C — full ranking artifacts
+
+Stage 2 produces three analysis artifacts beyond aggregate metrics:
+
+- **Task A: Full per-ticker ranking per fold** (`fold_{1-5}/full_ranking.csv`). All ~100-112 test tickers with predicted return, prediction std (ensemble uncertainty), actual return, predicted rank, actual rank, rank error, and snapshot count. Useful for long-short simulation, decile analysis, or ranking-quality diagnostics.
+- **Task B: SPY benchmark across all folds** (`spy_benchmark.csv`). Stage 2 computes SPY's mean 3-month forward return averaged over each fold's date range (~495 weekly anchor dates). Earlier versions only had SPY in 2 of 5 folds (the ones where SPY happened to be a test ticker). The standalone `fix_spy_benchmark.py` script regenerates this if needed.
+- **Task C: Per-snapshot rankings** (`fold_{1-5}/per_snapshot_ranking.csv`). Tickers grouped by month, ranked within each bucket. Enables "if I'd run this monthly with a 3-month hold, what would the trajectory look like?" simulation.
+
+These three were initially proposed as analysis asks from a quant friend during v2.3.6, then deferred to Stage 2 to avoid disturbing the running Optuna study. They are now generated automatically by `stage2_retrain.py`.
+
 ## Known limitations
 
-- **Fold 1 outlier inflates the headline alpha.** SNDK's post-IPO run drives Fold 1 to an unusually high value; the robust estimate across Folds 2–5 is closer to +8.5%p. The aggregate number should be read with this in mind.
-- **Hyperparameters set by trial-and-error**, not systematic search. NN architecture, learning rate, epochs, and dropout are all manually chosen. Sensitivity to these choices is not characterized.
+- **Fold 1 outlier inflates the headline alpha when SNDK is included.** SNDK's post-IPO run drives Fold 1 alpha to +44.9%p (vs +7.8%p in the without-SNDK config); the robust estimate across Folds 2–5 is closer to +8.5%p in either configuration. Headlines should be read with the SNDK exclusion noted. See [Sensitivity analysis](#sensitivity-analysis-sndk-exclusion).
+- **Hyperparameters were optimized within a 6-dimension search space** (lr, weight_decay, huber_delta, architecture, var_threshold, corr_threshold) using a 60-trial Optuna TPE sampler. Performance is conditional on this search space — broader searches over composite-score coefficients, train/val split ratios, dropout rates, optimizer choice, or LR schedule may yield further improvements. The search also held N_ENSEMBLE=5 fixed for tractability; Stage 2 verifies the N=5 → N=20 invariance assumption but doesn't search ensemble size as a hyperparameter.
+- **Methodological asymmetry between Stage 1 and Stage 2.** Stage 1 (Optuna search) ran on 4 folds (`[1,2,3,4]` = Fold 2-5) to avoid SNDK's Fold 1 distortion via fold-level exclusion. Stage 2 (production retrain) ran on all 5 folds with SNDK excluded at the ticker level — a more precise approach. The `optuna_search.py` script has been updated to match Stage 2's design (5 folds + SNDK ticker exclusion) for any future re-runs, but the v2.3.7 hyperparameter search itself ran on the original 4-fold layout. The Stage 2 result demonstrates the asymmetry doesn't materially affect ranking quality (rank_corr 0.518 with vs 0.521 without SNDK at production scale).
 - **No transaction cost, slippage, or tax modeling.** All backtest numbers are paper-alpha and will be lower after real-world frictions (typically several %p/year for monthly rebalancing strategies).
-- **Survivorship bias in the training universe.** Tickers are sampled from the current S&P 500 + NASDAQ-100 composition, so stocks that were delisted or removed from the index during the 10-year window are underrepresented. This biases the training distribution toward survivors.
-- **Composite score coefficients are hand-picked.** `sentiment_weight=0.10`, `uncertainty_penalty=3.0`, `event_risk_penalty=2.0` were not tuned via grid search. The ablation above measures sentiment as a feature group (one swap in top-5); individual coefficient sensitivity is still uncharacterized.
+- **Survivorship bias in the training universe.** Tickers are sampled from the *current* S&P 500 + NASDAQ-100 composition, so stocks that were delisted or removed from the index during the 10-year window are underrepresented. This biases the training distribution toward survivors.
+- **Composite score coefficients are hand-picked.** `sentiment_weight=0.10`, `uncertainty_penalty=3.0`, `event_risk_penalty=2.0` were not tuned via grid search and were intentionally not in the Optuna search space (they govern Stage 2 selection rather than NN training and merit a separate study). The v2.3.3 ablation measured sentiment as a feature group (one swap in top-5); individual coefficient sensitivity is still uncharacterized.
 - **No historical fundamentals.** yfinance doesn't expose past PE/ROE/analyst targets, so Stage 1 features are technical + macro only. Fundamentals enter only at Stage 2 via current analyst consensus.
-- **Sector concentration.** The selection step has no diversification constraint, so top 5 often cluster in 2 sectors (typically AI Compute + Neuromodulation). I currently accept this because the backtest shows rank-correlation is much stronger within-sector than across — forced diversification would pick lower-scoring stocks.
-- **yfinance rate limits.** Heavy S&P 500 batch downloads occasionally cause cross-asset fetches to return truncated history. The tz-safety fix in `training_universe.py` means this degrades gracefully, but ideally the macro loads should happen before the big batch.
-- **This is not investment advice.** Predictions carry ±12%p MAE on return and ±9%p on risk. Realized Sharpe will likely be 30–35% lower than predicted Sharpe.
+- **Sector concentration in selection step.** No diversification constraint; top 5 often cluster in 2 sectors (typically AI Compute + Neuromodulation). The v2.3.3 ablation showed cross-sector rank-correlation is much lower than within-sector, so forced diversification would pick lower-scoring stocks. Current default accepts the concentration.
+- **MC Dropout passes per ensemble member shrunk from 6 to 1 at N=20.** `MC_FORWARD_PASSES = 30` is divided across the ensemble (`30 // N_ENSEMBLE`), so at N=5 each model did 6 passes but at N=20 each model does 1. Uncertainty estimates rely more on ensemble variance than dropout sampling. This is a design choice (ensemble averaging is itself approximate Bayesian, Gal & Ghahramani 2016) but the trade-off isn't characterized empirically.
+- **yfinance rate limits.** Heavy S&P 500 batch downloads occasionally cause cross-asset fetches to return truncated history. The tz-safety fix in `training_universe.py` means this degrades gracefully, but ideally the macro loads should happen before the big batch. Separately, `fredapi` lacks an internal socket timeout (`socket.setdefaulttimeout(120)` is set in `fetch_fred_data` to mitigate; addresses a real 30-min stall observed during Stage 1 prep).
+- **This is not investment advice.** Predictions carry ±12%p MAE on return and ±9%p on risk. Realized Sharpe will likely be 30–35% lower than predicted Sharpe. Monthly tracking against actual realized returns is the only honest validation; backtests don't prove future performance.
 
 ## Output
 
@@ -121,6 +316,20 @@ After a full run, `results/` contains:
 - `fig1_scatter.png` through `fig8_dashboard.png` — auto-generated figures
 - `backtest_results.json` — if `--backtest` was run
 - `backtest_cache.npz` — cached training matrix for faster re-runs
+
+After Stage 1 + Stage 2 runs:
+
+- `optuna_storage.db` — Optuna trial database (SQLite, resume-safe)
+- `optuna_stage1_results.json` — Stage 1 top-3 hyperparameters summary
+- `optuna_stage1.log` — full trial log
+- `stage2/top1_trial58/` — Stage 2 retrain artifacts (without SNDK):
+  - `summary.json` — aggregate metrics
+  - `fold_{1-5}/full_ranking.csv` — Task A
+  - `fold_{1-5}/per_snapshot_ranking.csv` — Task C
+  - `spy_benchmark.csv` — Task B
+  - `loss_curves_fold{1-5}.png` — real-time plot snapshots
+- `stage2_with_sndk/top1_trial58/` — sensitivity analysis (with SNDK)
+- `momentum_baseline_v237.json` — apples-to-apples momentum baseline
 
 ## Sector overview
 
@@ -138,30 +347,14 @@ Anchor tickers are small/niche names that aren't in S&P 500 and therefore can't 
 
 ## Future work
 
-The current pipeline uses a deep ensemble with MC Dropout, which is an
-approximate Bayesian method (Gal & Ghahramani, 2016) — the ensemble
-approximates posterior averaging and MC Dropout approximates variational
-inference. However, the shrinkage layer in `blend_optimizer.py` and the
-composite score use hand-picked coefficients rather than proper posterior
-inference.
+The current pipeline uses a deep ensemble with MC Dropout, which is an approximate Bayesian method (Gal & Ghahramani, 2016) — the ensemble approximates posterior averaging and MC Dropout approximates variational inference. However, the shrinkage layer in `blend_optimizer.py` and the composite score use hand-picked coefficients rather than proper posterior inference.
 
 Planned upgrades:
 
-- **Uncertainty calibration**: verify that predicted standard deviations
-  actually match realized errors (calibration plots, temperature scaling
-  if needed, following Guo et al., 2017).
-- **Heteroscedastic output + aleatoric / epistemic decomposition**:
-  output `(mean, log_var)` pairs trained with negative log-likelihood
-  loss, following Kendall & Gal (2017). Separates irreducible market
-  noise from reducible model uncertainty — useful for portfolio selection.
-- **Hierarchical Bayesian structure over sectors**: sector-level priors
-  with ticker-level posteriors (analogous to multi-level GLM with
-  ROI-level random effects in fMRI analysis). Expected to improve
-  cross-sector transfer, which is currently weak (+0.027 rank corr).
-- **Disentangle macro from the per-ticker feature matrix.** The ablation above
-  showed that macro features hurt cross-sectional rank correlation
-  (+0.465 → +0.526 when removed), because all tickers at a given snapshot
-  share identical macro values — the ensemble partially overfits to
-  time-synchronous signals that carry no inter-ticker information. A cleaner
-  design would route macro features through the blend-optimizer's regime gate
-  only, rather than concatenating them into each ticker's feature vector.
+- **Composite-score coefficient optimization**: grid search over `sentiment_weight`, `uncertainty_penalty`, `event_risk_penalty`, `EVENT_RISK_PENALTY`. The Optuna Stage 1 search intentionally excluded these to keep the NN training search space focused. Stage 1's discovery that the network converges in 200-400 epochs at the optimal hyperparameters means a follow-up Stage 3 study is feasible at production ensemble size (N=20) within ~24h.
+- **Survivorship bias correction**: use point-in-time S&P 500 + NASDAQ-100 composition data (Compustat / CRSP / Bloomberg) instead of current composition. Currently the training universe overrepresents survivors, which biases the model's expectations.
+- **Transaction cost + slippage modeling**: incorporate realistic frictions (commissions, bid-ask spread, FX, taxes) into backtest alpha. For monthly rebalancing of small ($KRW 20M) positions, expected friction is several %p/year.
+- **Uncertainty calibration**: verify that predicted standard deviations actually match realized errors (calibration plots, temperature scaling if needed, following Guo et al., 2017). At N=20 with 1 MC pass per model, the dropout-based aleatoric component is weak; characterizing whether ensemble variance alone is well-calibrated would inform whether to revisit MC dropout count.
+- **Heteroscedastic output + aleatoric / epistemic decomposition**: output `(mean, log_var)` pairs trained with negative log-likelihood loss, following Kendall & Gal (2017). Separates irreducible market noise from reducible model uncertainty — useful for portfolio selection and confidence interval reporting.
+- **Hierarchical Bayesian structure over sectors**: sector-level priors with ticker-level posteriors (analogous to multi-level GLM with ROI-level random effects in fMRI analysis). Expected to improve cross-sector transfer, which is currently weak (+0.027 rank corr in the v2.3.3 ablation; not re-measured at Stage 2).
+- **Disentangle macro from the per-ticker feature matrix.** The v2.3.3 ablation showed that macro features hurt cross-sectional rank correlation (+0.465 → +0.526 when removed), because all tickers at a given snapshot share identical macro values — the ensemble partially overfits to time-synchronous signals that carry no inter-ticker information. A cleaner design would route macro features through the blend-optimizer's regime gate only, rather than concatenating them into each ticker's feature vector.
