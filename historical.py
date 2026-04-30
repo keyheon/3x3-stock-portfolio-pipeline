@@ -433,7 +433,7 @@ def _train_fold_torch(X_tr, Y_ret_tr, Y_risk_tr, X_te, Y_ret_te, Y_risk_te):
             patience = 0
         else:
             patience += 1
-            if patience > 100:
+            if patience > getattr(config, 'EARLY_STOP_PATIENCE', 41):
                 break
 
     model.eval()

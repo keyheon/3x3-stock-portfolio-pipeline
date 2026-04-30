@@ -469,7 +469,7 @@ def run_fold_with_plot(data, train_tickers, test_tickers, fold_id,
     huber_delta = getattr(config_module, 'TRAINING_HUBER_DELTA', 0.3)
     weight_decay = getattr(config_module, 'TRAINING_WEIGHT_DECAY', 1e-4)
     epochs = getattr(config_module, 'TRAINING_EPOCHS', 5000)
-    patience = 41
+    patience = getattr(config_module, 'EARLY_STOP_PATIENCE', 41)
     batch_size = 256
 
     # Build ensemble

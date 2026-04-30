@@ -336,7 +336,7 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers, meta,
                 patience = 0
             else:
                 patience += 1
-                if patience > 40:
+                if patience > getattr(config, 'EARLY_STOP_PATIENCE', 41):
                     break
 
         # Restore best val-loss checkpoint

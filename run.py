@@ -458,7 +458,7 @@ def _historical_train_and_predict(tickers, D):
                 patience = 0
             else:
                 patience += 1
-                if patience > 50: break
+                if patience > getattr(config, 'EARLY_STOP_PATIENCE', 41): break
 
         # Restore best val-loss checkpoint
         if best_state is not None:

@@ -15,14 +15,9 @@ RISK_LABELS = ["Aggressive", "Balanced", "Stable"]
 TIME_MULTIPLIERS = [0.40, 0.75, 0.95]
 RISK_TIER_MIDPOINTS = [0.35, 0.15, 0.05]
 
-# Ensemble NN (Stock Scorer)
+# Ensemble NN
 N_ENSEMBLE = 20
-SCORER_HIDDEN_1 = 32
-SCORER_HIDDEN_2 = 16
-SCORER_DROPOUT = 0.2
-SCORER_EPOCHS = 1500
-SCORER_LR = 0.005
-SCORER_GRAD_SAMPLE = 0.3
+EARLY_STOP_PATIENCE = 41   # patience for val-loss based early stopping
 
 # Monte Carlo Dropout
 MC_FORWARD_PASSES = 30
