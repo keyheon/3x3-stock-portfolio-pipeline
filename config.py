@@ -23,7 +23,7 @@ EARLY_STOP_PATIENCE = 41   # patience for val-loss based early stopping
 MC_FORWARD_PASSES = 30
 
 # Stock selection
-UNCERTAINTY_PENALTY = 3.0
+UNCERTAINTY_PENALTY = 1.0
 
 # Matrix Network
 MATRIX_HIDDEN_1 = 64
@@ -63,7 +63,7 @@ SCREENER_MAX_UNIVERSE = 50
 SENTIMENT_MODEL = 'finbert'            # 'finbert' or 'vader'
 SENTIMENT_LOOKBACK_DAYS = 30
 SENTIMENT_WEIGHT_IN_SCORE = 0.10
-EVENT_RISK_PENALTY = 2.0
+EVENT_RISK_PENALTY = 0.0
 FINNHUB_API_KEY = ''                   # get a free key at https://finnhub.io
 
 # FRED API
