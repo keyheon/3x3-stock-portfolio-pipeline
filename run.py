@@ -427,7 +427,8 @@ def _historical_train_and_predict(tickers, D):
             in_dim = h
         layers.append(nn.Linear(in_dim, 2))
         model = nn.Sequential(*layers)
-        opt = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+        opt = torch.optim.Adam(model.parameters(), lr=lr,
+                       weight_decay=getattr(config, 'TRAINING_WEIGHT_DECAY', 1e-4))
 
         best_val = float('inf'); patience = 0
         best_state = None

@@ -412,7 +412,8 @@ def _train_fold_torch(X_tr, Y_ret_tr, Y_risk_tr, X_te, Y_ret_te, Y_risk_te):
     delta = getattr(config, 'TRAINING_HUBER_DELTA', 0.3)
     epochs = getattr(config, 'TRAINING_EPOCHS', 800)
 
-    opt = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+    opt = torch.optim.Adam(model.parameters(), lr=lr,
+                       weight_decay=getattr(config, 'TRAINING_WEIGHT_DECAY', 1e-4))
 
     model.train()
     best_loss = float('inf')

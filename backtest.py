@@ -303,7 +303,8 @@ def _run_single_fold(X, Y_ret, Y_risk, sample_tickers, meta,
             in_dim = h
         layers.append(nn.Linear(in_dim, 2))
         model = nn.Sequential(*layers)
-        opt = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-4)
+        opt = torch.optim.Adam(model.parameters(), lr=lr,
+                       weight_decay=getattr(config, 'TRAINING_WEIGHT_DECAY', 1e-4))
 
         best_val, patience = float('inf'), 0
         best_state = None
