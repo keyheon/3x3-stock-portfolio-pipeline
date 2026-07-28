@@ -86,3 +86,9 @@ Computed on binding folds 1–5, 3-seed means:
 ## 8. Commit discipline
 
 This pre-registration is committed before `walk_forward_v2317.py` is written and before any run. The implementation must match §2–§3; any deviation discovered during implementation is recorded as a rule-preserving amendment *before* the full run (smoke tests excepted). Results are recorded afterward as **Amendment 1** in a separate commit that changes no rules. Per-seed, per-fold metrics for both primaries and all secondaries are force-added as evidence (v2.3.15 best_trials precedent).
+
+---
+
+## Implementation note (2026-07-28, pre-run)
+
+Recorded per §8 before any full run. `walk_forward_v2317.py` implements §2–§3 with one mechanical specification: the 63-trading-day purge is applied as a 92-calendar-day bound (63 weekdays = 88.2 calendar days + market holidays ≤ 92), which purges slightly more than 63 trading days in all cases — a conservative, rule-preserving approximation. Additionally, per-date metrics require ≥ 30 tickers at a snapshot date (MIN_DATE_COUNT); dates below this are excluded from IC/alpha and the excluded fraction is reported as `date_coverage` per fold. No rule is changed.
