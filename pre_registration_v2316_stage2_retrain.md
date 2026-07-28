@@ -98,3 +98,44 @@ Phase 1 ₩20M deployment remains conditional on v2.3.17 passing its own pre-reg
 ## 8. Commit discipline
 
 Per Asymmetric Validation and the v2315 §11 precedent: this pre-registration is committed **before** the six runs. The result (per-seed M for both configs, mean Δ, range overlap, sign consistency, verdict bucket, adopt/retain/halt) is recorded afterward as **Amendment 1** to this document, in a separate commit that changes no rules.
+
+---
+
+## Amendment 1 — Result Record (2026-06-24)
+
+**Nature**: outcome record only; no rules changed. Written after the six pre-registered runs completed on desktop (WSL2, conda `stock`). Per §8, committed separately from the pre-registration.
+
+### Runs
+
+All six runs completed as specified in §2 (N=20, 5 folds, SNDK excluded, Gaussian NLL, epoch cap 20000 / patience 41, seeds {42, 1, 2} paired, fixed data partition). Outputs: `results/stage2_v2316/top1_trial52_seed{42,1,2}/` and `top1_trial58_seed{42,1,2}/`. Elapsed 6.3–7.2 h per run.
+
+### §4 verdict computation (mechanical)
+
+```
+  seed   M_A(champ)    M_B(base)    delta_S
+    42       0.5429       0.5165    +0.0264
+     1       0.5307       0.5164    +0.0143
+     2       0.5376       0.5150    +0.0226
+
+mean A = 0.5371   range A = [0.5307, 0.5429]
+mean B = 0.5160   range B = [0.5150, 0.5165]
+mean delta = +0.0211
+
+Gate 1  |mean d| >= 0.015 : PASS  (0.0211)
+Gate 2  sign 3/3 consistent: PASS  (+0.0264, +0.0143, +0.0226)
+Gate 3  ranges disjoint    : PASS  (A_min 0.5307 > B_max 0.5165)
+
+VERDICT: IMPROVEMENT
+```
+
+### Verdict
+
+**IMPROVEMENT — Trial 52 adopted as production.** All three gates pass. Per §6: update `config.py` to Trial 52 hyperparameters; annotate v2.3.7–v2.3.14 as "trained under superseded hyperparameters" as touched; proceed to v2.3.17 walk-forward.
+
+### Observations (recorded, non-binding)
+
+1. **Measured baseline vs prior figure.** B̄ = 0.5160 vs the prior single-seed v2.3.12 figure 0.5021 (+0.0139). Not a setup error — the three baseline seeds reproduce tightly (0.5150–0.5165) — but evidence that the original v2.3.12 run was a low seed draw. This retroactively validates the multi-seed design: a single-seed comparison against 0.5021 would have overstated the champion's edge as +0.035; the paired measured edge is +0.0211.
+
+2. **Secondary alpha (§5).** Champion 3-seed mean selection alpha +7.9%p vs baseline +8.4%p — mildly reversed relative to rank_corr. Below any "craters" threshold, so no §5 flag, but carried into v2.3.17 interpretation: Trial 52 improves cross-sectional ranking, not top-5 selection alpha, on this metric.
+
+3. **Seed stability.** Champion range width 0.0122, baseline 0.0015; per-fold top-5 sets are near-identical across seeds within each config (plateau selection stability, consistent with the v2.3.15 Stage 1 finding).
