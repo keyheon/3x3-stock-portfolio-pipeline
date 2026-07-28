@@ -81,18 +81,18 @@ USE_SENTIMENT_FEATURES = True  # FinBERT + SEC + FDA + earnings (22 features)
 
 TRAINING_PERIOD = '10y'                # training data period
 TRAINING_SNAPSHOT_INTERVAL = 10        # snapshot interval (trading days)
-# Optuna Stage 1 Trial #58 best (v2.3.7 production)
-# 60-trial TPE search; best rank_corr 0.5616 (4-fold layout, N=5 ensemble)
-TRAINING_NN_ARCHITECTURE = [64, 32, 16]  # 'medium' (Optuna best)
+# v2.3.15 NLL search Trial 52 (v2.3.16 verdict: IMPROVEMENT, Amendment 1)
+# 60-trial TPE search; Stage 1 rank_corr 0.5732 (N=5); Stage 2 N=20 0.5371
+TRAINING_NN_ARCHITECTURE = [128, 64, 32]  # 'large' (Trial 52)
 TRAINING_EPOCHS = 20000   # [v2.3.15 Amendment 2] 5000 → 20000 (Prechelt 2.0× safety margin under NLL convergence)
-TRAINING_LR = 0.00024955280836145015           # ~2.5e-4
-TRAINING_WEIGHT_DECAY = 0.00016413025522015487  # ~1.64e-4
+TRAINING_LR = 0.001563563963064687           # ~1.56e-3
+TRAINING_WEIGHT_DECAY = 4.4856093488331435e-05  # ~4.49e-5
 TRAINING_HUBER_DELTA = 0.5
-TRAINING_DROPOUT = 0.2                  # NN dropout (hardcoded in v2.3.6/v2.3.12; tunable in v2.3.15+)
+TRAINING_DROPOUT = 0.1146035891599349                  # v2.3.15 Trial 52 (tunable in v2.3.15+)
 
-# Feature selection thresholds (Optuna best)
-VAR_THRESHOLD = 0.001971224419059394             # ~0.00197
-CORR_THRESHOLD = 0.0837536123288791              # ~0.0838
+# Feature selection thresholds
+VAR_THRESHOLD = 0.0010819081885486052            # ~0.00108
+CORR_THRESHOLD = 0.05584259829572068             # ~0.0558
 
 # SEC EDGAR User-Agent (required by SEC fair-use policy)
 # Format: 'Real Name email@domain' — fill in locally, keep empty on GitHub
