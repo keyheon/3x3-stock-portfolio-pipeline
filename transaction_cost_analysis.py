@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Apply realistic transaction costs to Stage 2 top-5 selections."""
 
+import argparse
 import json
 import time
 from pathlib import Path
@@ -9,9 +10,6 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-STAGE2_DIR = Path('results/stage2/top1_trial58')
-OUT_JSON = Path('results/tc_analysis_summary.json')
-OUT_MD = Path('results/tc_analysis_summary.md')
 ADV_CACHE = Path('results/tc_adv_cache.json')
 
 # KIS US-routed defaults
@@ -117,8 +115,18 @@ def compute_fold_net_alpha(fold_info, aux, position_krw, turnover_yr, params, us
 
 
 def main():
-    summary = json.loads((STAGE2_DIR / 'summary.json').read_text())
-    spy_df = pd.read_csv(STAGE2_DIR / 'spy_benchmark.csv')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--stage2-dir',
+                        default='results/stage2_v2316/top1_trial52_seed42')
+    parser.add_argument('--out-tag', default='v2316')
+    args = parser.parse_args()
+
+    stage2_dir = Path(args.stage2_dir)
+    out_json = Path(f'results/tc_analysis_{args.out_tag}.json')
+    out_md = Path(f'results/tc_analysis_{args.out_tag}.md')
+
+    summary = json.loads((stage2_dir / 'summary.json').read_text())
+    spy_df = pd.read_csv(stage2_dir / 'spy_benchmark.csv')
 
     usd_krw = fetch_usd_krw()
     print(f'USD/KRW = {usd_krw:.2f}\n')
@@ -154,6 +162,7 @@ def main():
             })
 
     output = {
+        'stage2_dir': str(stage2_dir),
         'tc_params': TC_PARAMS,
         'usd_krw': usd_krw,
         'usd_krw_fetched_at': pd.Timestamp.now().strftime('%Y-%m-%d %H:%M'),
@@ -161,11 +170,12 @@ def main():
         'paper_alpha_std': float(spy_df['alpha_vs_spy'].std()),
         'grid': grid,
     }
-    OUT_JSON.write_text(json.dumps(output, indent=2))
-    print(f'\nWrote {OUT_JSON}')
+    out_json.write_text(json.dumps(output, indent=2))
+    print(f'\nWrote {out_json}')
 
     lines = [
-        '# Stage 1 — Transaction Cost Sensitivity\n',
+        f'# Transaction Cost Sensitivity — {args.out_tag}\n',
+        f'Selections: `{stage2_dir}`',
         f'Paper alpha baseline (mean across 5 folds): **+{output["paper_alpha_baseline"]*100:.2f}%p / quarter** '
         f'(±{output["paper_alpha_std"]*100:.2f}%p)',
         f'USD/KRW: {usd_krw:.2f} (fetched {output["usd_krw_fetched_at"]})\n',
@@ -178,8 +188,8 @@ def main():
                      f"{g['mean_quarterly_tc_pct']*100:.2f}% | "
                      f"**{g['mean_net_alpha_pct']*100:+.2f}%p** | "
                      f"±{g['std_net_alpha_pct']*100:.2f}%p |")
-    OUT_MD.write_text('\n'.join(lines) + '\n')
-    print(f'Wrote {OUT_MD}\n')
+    out_md.write_text('\n'.join(lines) + '\n')
+    print(f'Wrote {out_md}\n')
 
     print(f"{'Pos (₩M)':>10s} {'Turn/y':>8s} {'Q-TC':>8s} {'Net α':>10s}")
     for g in grid:
