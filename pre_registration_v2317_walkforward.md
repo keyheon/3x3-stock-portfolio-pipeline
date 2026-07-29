@@ -92,3 +92,47 @@ This pre-registration is committed before `walk_forward_v2317.py` is written and
 ## Implementation note (2026-07-28, pre-run)
 
 Recorded per §8 before any full run. `walk_forward_v2317.py` implements §2–§3 with one mechanical specification: the 63-trading-day purge is applied as a 92-calendar-day bound (63 weekdays = 88.2 calendar days + market holidays ≤ 92), which purges slightly more than 63 trading days in all cases — a conservative, rule-preserving approximation. Additionally, per-date metrics require ≥ 30 tickers at a snapshot date (MIN_DATE_COUNT); dates below this are excluded from IC/alpha and the excluded fraction is reported as `date_coverage` per fold. No rule is changed.
+
+---
+
+## Amendment 1 — Result Record (2026-07-30)
+
+**Nature**: outcome record only; no rules changed. Written after the three pre-registered seed runs completed on desktop (WSL2, conda `stock`). Per §8, committed separately; per-seed evidence (summary.json + per-fold date CSVs) force-added alongside.
+
+### Runs
+
+All three seeds {42, 1, 2} completed the six-fold purged expanding walk-forward as specified in §2 (N=20, Trial 52 config verified in each run header, purge 92-calendar-day bound, SNDK excluded). Per-date grouping was valid: ~510 tickers per snapshot date, date_coverage ≈ 0.96 (per-fold values in each summary.json). Momentum secondary used feature `return_180d`; SPY secondary matched 152 snapshot dates. Elapsed ≈ 7–8 h per seed. Outputs: `results/walkforward_v2317/seed{42,1,2}/`.
+
+### §4 verdict computation (mechanical)
+
+```
+ fold  year   IC s42    IC s1    IC s2  IC mean | alpha mean
+    1  2021  -0.0085  -0.0109  -0.0131  -0.0109 |    -2.75%p
+    2  2022  +0.0088  +0.0306  -0.0014  +0.0127 |    +6.86%p
+    3  2023  -0.0882  -0.0656  -0.0816  -0.0785 |    +2.95%p
+    4  2024  -0.0054  -0.0015  +0.0013  -0.0018 |    +5.95%p
+    5  2025  +0.1199  +0.1216  +0.1300  +0.1238 |   +16.01%p
+
+mean IC          = +0.0091   (threshold >= 0.05)   -> FAIL
+positive folds   = 2/5       (threshold >= 4/5)    -> FAIL
+mean top-5 alpha = +5.81%p   (threshold > 0.62%p)  -> PASS
+
+VERDICT: FAIL
+```
+
+### Verdict
+
+**FAIL — deployment gate closed.** Per §6: no capital entry; Phase 1 and v2.4.0 on hold; the cross-sectional↔time-axis dissociation becomes the designated diagnosis track. The v2.3.16 adoption of Trial 52 is **not** reversed — it was a cross-sectional decision and remains valid on that axis. No post-hoc threshold revision (§4).
+
+### Secondary results (non-binding, recorded)
+
+- Fold 0 (2020, non-binding): IC +0.2160, alpha +25.49%p — the strongest year, reported per §5.
+- Momentum baseline IC (binding mean): **−0.0020** vs model +0.0091.
+- Alpha vs SPY (binding mean): +5.95%p. ICIR: +0.01. Alpha excluding fold 5: +3.26%p (§5 fragility check).
+
+### Observations (recorded, non-binding)
+
+1. **The dissociation is a stable property, not seed noise.** Per-fold ICs reproduce tightly across seeds (fold 3: −0.088/−0.066/−0.082; fold 5: +0.120/+0.122/+0.130). Three seeds tell one story.
+2. **Nobody ranks the future here.** The naive momentum baseline's time-ordered IC is also ≈ 0 (−0.002). The full-ranking failure is therefore not NN-specific; it is consistent with the project's original v2.3.1 rationale for ticker-axis CV — regime shifts dominate cross-sectional predictability on the time axis. Fold 3 (2023) is the sharpest case: a model trained through 2022 inverts (IC −0.079) in the AI-rally year.
+3. **Full-ranking IC ≈ 0 while top-5 alpha survives.** +5.81%p mean (≈9× TC_est), positive in 4/5 binding folds, +3.26%p excluding the best fold, +5.95%p vs SPY. Spearman IC weights the entire ranking uniformly and is insensitive to tail-only skill, so these two results can coexist. Whether the alpha reflects genuine tail identification or small-n concentration (5 picks/date, likely repeated across adjacent snapshots) is **not resolved by this study**; it is the first diagnosis question. No deployment claim is made from this alpha under this gate.
+4. **Direction after diagnosis.** If the alpha survives concentration analysis, the honest path is a **new** pre-registered gate built around the deployment-form question (top-5 net alpha) with appropriate statistics — not a retrofit of this one. If it does not survive, the model's inability to select future stocks is established on both metrics and the record will say so.

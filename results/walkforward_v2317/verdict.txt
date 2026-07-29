@@ -1,0 +1,21 @@
+=== v2.3.17 §4 verdict (3-seed means, binding folds 1-5) ===
+
+ fold  year   IC s42    IC s1    IC s2  IC mean | alpha mean
+    1  2021  -0.0085  -0.0109  -0.0131  -0.0109 |     -2.75%p
+    2  2022  +0.0088  +0.0306  -0.0014  +0.0127 |     +6.86%p
+    3  2023  -0.0882  -0.0656  -0.0816  -0.0785 |     +2.95%p
+    4  2024  -0.0054  -0.0015  +0.0013  -0.0018 |     +5.95%p
+    5  2025  +0.1199  +0.1216  +0.1300  +0.1238 |    +16.01%p
+
+mean IC          = +0.0091   (threshold >= 0.05)      -> FAIL
+positive folds   = 2/5      (threshold >= 4/5)       -> FAIL
+mean top-5 alpha = +5.81%p (threshold > 0.62%p) -> PASS
+
+>>> VERDICT: FAIL
+
+--- Secondary (non-binding) ---
+Fold 0 (2020, non-binding): IC +0.2160, alpha +25.49%p
+Momentum baseline IC (binding mean): -0.0020  vs model +0.0091
+Alpha vs SPY (binding mean): +5.95%p
+ICIR (binding mean): +0.01
+Alpha excl. fold 5: +3.26%p  (fragility check, §5)
