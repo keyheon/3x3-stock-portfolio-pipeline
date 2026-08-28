@@ -47,3 +47,19 @@ Lag-1..6 autocorrelation of per-date alpha within each fold (63-trading-day forw
 - Mixed → record honestly; Phase B decision weighed on which components failed.
 
 Anchor values (~0.6, ~0.7, ~0.3, top-3 ~50/70%) are stated conveniences chosen before computation, not validated thresholds; they bind interpretation language, not actions with capital consequences (no capital decision flows from Phase A directly).
+
+---
+
+## Phase A2 — Beta-Tilt Test (appended pre-run, 2026-08-29)
+
+Phase A's surviving characterization (intermittent IC-conditional ranking, asymmetric payoff) has a mundane alternative: the top-5 are simply high-beta/high-vol names, so long-only alpha vs the equal-weight universe is beta premium harvested in a mostly-rising decade, not selection skill. A2 tests this from the same committed CSVs.
+
+**A2-1 — Effective beta and decomposition.** OLS per fold and pooled (binding): top5_ret_d = a + b·univ_ret_d. Since alpha_d = a + (b−1)·univ_ret_d + e_d, mean alpha decomposes into a tilt component (b−1)·E[univ] and a residual (intercept) component a. Observations overlap (63-td windows, ~10-td grid), so estimates are descriptive — cross-fold consistency is the robustness axis; no p-values.
+
+**A2-2 — Down-market behavior.** Mean alpha on univ_ret ≤ 0 dates vs > 0 dates. Pure tilt predicts clearly negative alpha on down dates.
+
+**A2-3 — IC–market linkage.** ρ(IC_d, univ_ret_d) and the 2×2 (IC±, univ±) mean-alpha table: does "intermittent ranking" reduce to "market up"?
+
+**Anchors (stated before computation, judgment aids)**: b ≥ ~1.3 = strong tilt; intercept a ≤ ~TC_est (0.62%p/quarter) pooled and in a majority of binding folds → alpha is substantially risk tilt (H-beta). a ≥ ~2%p robust in ≥3/5 folds → a residual selection component exists beyond tilt.
+
+**Decision mapping**: H-beta supported → v2.3.18 closes as "no deployable selection edge beyond risk tilt"; Phase B optional/low value. Residual component robust → Phase B (pick-level: ticker concentration, persistence, realized-turnover TC) justified before any new gate design. Mixed → record honestly.
