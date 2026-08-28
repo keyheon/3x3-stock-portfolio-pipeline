@@ -63,3 +63,16 @@ Phase A's surviving characterization (intermittent IC-conditional ranking, asymm
 **Anchors (stated before computation, judgment aids)**: b ≥ ~1.3 = strong tilt; intercept a ≤ ~TC_est (0.62%p/quarter) pooled and in a majority of binding folds → alpha is substantially risk tilt (H-beta). a ≥ ~2%p robust in ≥3/5 folds → a residual selection component exists beyond tilt.
 
 **Decision mapping**: H-beta supported → v2.3.18 closes as "no deployable selection edge beyond risk tilt"; Phase B optional/low value. Residual component robust → Phase B (pick-level: ticker concentration, persistence, realized-turnover TC) justified before any new gate design. Mixed → record honestly.
+
+---
+
+## Disposition (2026-08-29, after Phase A + A2)
+
+**Final characterization of the v2.3.17 time-axis alpha.** The +5.81%p top-5 alpha decomposes into (i) a beta tilt (~40%, pooled b=1.63) that is unstable across years (fold-level b drifts 0.86 → 2.40; the 2025 basket carried 2.4× market sensitivity), and (ii) a residual intercept (~60%, +3.60%p pooled) that is concentrated in 2022 and 2025 and fails the pre-stated robustness anchor (a ≥ 2%p in only 2/5 binding folds; 2021 negative). Neither component meets a deployable-edge standard. The alpha is structural, not training noise (Phase A D2, ρ=0.84), and is not pure beta (intercept ≫ TC; down-date alpha ≈ 0 rather than clearly negative; alpha tracks IC sign over market sign) — but "real and characterized" is not "deployable."
+
+**Decisions.**
+- The v2.3.17 FAIL stands as the complete deployment answer for this model family on the time axis. No capital entry.
+- **Phase B (pick-level re-run) is designated optional research, not deployment-relevant.** The question it answers (which tickers, persistence, realized-turnover TC) informs understanding of the 2022/2025 residual, not any capital decision. If ever run, it requires its own pre-spec first; running it in search of a positive signal after this disposition would be the exact post-hoc pattern this project's rules exist to prevent.
+- Any future deployment claim from this pipeline requires a **new** pre-registered gate with dependence-aware statistics (per D5) and must confront the beta-instability finding directly (e.g., beta-adjusted alpha as the primary, not raw alpha).
+
+**v2.3.18 diagnosis track closed.**
