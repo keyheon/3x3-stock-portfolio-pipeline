@@ -48,15 +48,12 @@ FORMS = {'10-Q', '10-K'}
 
 
 def sec_get(url):
+    """Header pattern mirrors the repo's working EDGAR fetch (sentiment.py):
+    User-Agent only. Adding Accept-Encoding triggered a WAF 403."""
     import urllib.request
-    req = urllib.request.Request(url, headers={'User-Agent': UA,
-                                               'Accept-Encoding': 'gzip, deflate'})
+    req = urllib.request.Request(url, headers={'User-Agent': UA})
     with urllib.request.urlopen(req, timeout=60) as r:
-        data = r.read()
-        if r.headers.get('Content-Encoding') == 'gzip':
-            import gzip
-            data = gzip.decompress(data)
-    return json.loads(data)
+        return json.loads(r.read())
 
 
 def load_cik_map():
