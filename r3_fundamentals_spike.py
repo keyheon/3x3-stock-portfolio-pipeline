@@ -193,6 +193,7 @@ def main():
         res = {k: score_concept(facts, alts, k in DURATION_CONCEPTS)
                for k, alts in CONCEPTS.items()}
         core_ok = all(res[k] is not None and res[k]['n_quarters'] >= MIN_QUARTERS
+                      and np.isfinite(res[k]['median_lag_days'])
                       and res[k]['median_lag_days'] <= MAX_LAG_DAYS for k in CORE)
         per_ticker[tk] = {'cik': c, 'concepts': res, 'covered': bool(core_ok)}
         summary_bits = []
@@ -210,7 +211,8 @@ def main():
                        and v['concepts']['revenue']
                        for t in v['concepts']['revenue']['tags_used']})
     lags = [v['concepts'][k]['median_lag_days'] for v in per_ticker.values()
-            if 'concepts' in v for k in CORE if v['concepts'][k]]
+            if 'concepts' in v for k in CORE if v['concepts'][k]
+            and np.isfinite(v['concepts'][k]['median_lag_days'])]
     annual_share = []
     for v in per_ticker.values():
         if 'concepts' not in v:
@@ -236,7 +238,12 @@ def main():
         cells = []
         for k in CORE + ['eps_diluted', 'op_cashflow', 'shares_out']:
             r = v['concepts'][k]
-            cells.append('—' if r is None else f"{r['n_quarters']}q / {int(r['median_lag_days'])}d")
+            if r is None:
+                cells.append('—')
+            elif not np.isfinite(r['median_lag_days']):
+                cells.append(f"{r['n_quarters']}q / lag n/a")
+            else:
+                cells.append(f"{r['n_quarters']}q / {int(r['median_lag_days'])}d")
         lines.append(f"| {tk} | {'YES' if v['covered'] else 'no'} | " + ' | '.join(cells) + ' |')
     lines += ['',
               f'**Covered: {n_cov}/{len(TICKERS)} → verdict: {verdict}**',

@@ -1,0 +1,2468 @@
+{
+  "prespec": "research_r3_fundamentals_spike_prespec.md",
+  "run_date": "2026-09-08",
+  "verdict": "FEASIBLE",
+  "n_covered": 18,
+  "covered": [
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "AMZN",
+    "TSLA",
+    "NFLX",
+    "JPM",
+    "GS",
+    "CVX",
+    "JNJ",
+    "LLY",
+    "PG",
+    "KO",
+    "CAT",
+    "HON",
+    "NEE",
+    "DUK",
+    "AMT"
+  ],
+  "per_ticker": {
+    "AAPL": {
+      "cik": 320193,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:Revenues",
+            "us-gaap:SalesRevenueNet"
+          ],
+          "n_entries": 160,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 4,
+          "n_quarters": 38,
+          "first_end": "2016-03-26",
+          "last_end": "2025-12-27",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 34.0,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.375
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss"
+          ],
+          "n_entries": 160,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 4,
+          "n_quarters": 38,
+          "first_end": "2016-03-26",
+          "last_end": "2025-12-27",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 34.0,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.28125
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 160,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 4,
+          "n_quarters": 38,
+          "first_end": "2016-03-26",
+          "last_end": "2025-12-27",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 34.0,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.28125
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity"
+          ],
+          "n_entries": 173,
+          "n_quarters_direct": 38,
+          "n_q4_derivable": 0,
+          "n_quarters": 38,
+          "first_end": "2016-03-26",
+          "last_end": "2025-12-27",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 34.0,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.23121387283236994
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 79,
+          "n_quarters_direct": 38,
+          "n_q4_derivable": 0,
+          "n_quarters": 38,
+          "first_end": "2016-03-26",
+          "last_end": "2025-12-27",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 34.0,
+          "median_lag_all_reports_v1": 37.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5063291139240507
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 86,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-26",
+          "last_end": "2025-12-27",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 34.0,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2558139534883721
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 119,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-08",
+          "last_end": "2025-12-27",
+          "median_lag_days": 25.5,
+          "p90_lag_days": 34.0,
+          "median_lag_all_reports_v1": 34.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6722689075630253
+        }
+      },
+      "covered": true
+    },
+    "MSFT": {
+      "cik": 789019,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:SalesRevenueNet"
+          ],
+          "n_entries": 158,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 30.1,
+          "median_lag_all_reports_v1": 388.5,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.33544303797468356
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss"
+          ],
+          "n_entries": 158,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 30.1,
+          "median_lag_all_reports_v1": 388.5,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.27848101265822783
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 158,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 30.1,
+          "median_lag_all_reports_v1": 388.5,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.27848101265822783
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity"
+          ],
+          "n_entries": 117,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 30.1,
+          "median_lag_all_reports_v1": 214.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.3333333333333333
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 80,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 30.1,
+          "median_lag_all_reports_v1": 73.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.4875
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 126,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 9,
+          "n_quarters": 39,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 30.200000000000003,
+          "median_lag_all_reports_v1": 389.0,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.3492063492063492
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 137,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-22",
+          "last_end": "2025-12-31",
+          "median_lag_days": 13.0,
+          "p90_lag_days": 30.0,
+          "median_lag_all_reports_v1": 29.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5766423357664233
+        }
+      },
+      "covered": true
+    },
+    "NVDA": {
+      "cik": 1045810,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:Revenues"
+          ],
+          "n_entries": 160,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-10-26",
+          "median_lag_days": 24.0,
+          "p90_lag_days": 31.0,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 32,
+          "frame_present_frac": 0.375
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss"
+          ],
+          "n_entries": 161,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-10-26",
+          "median_lag_days": 24.0,
+          "p90_lag_days": 31.0,
+          "median_lag_all_reports_v1": 304.0,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.2546583850931677
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 161,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-10-26",
+          "median_lag_days": 24.0,
+          "p90_lag_days": 31.0,
+          "median_lag_all_reports_v1": 304.0,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.2795031055900621
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity"
+          ],
+          "n_entries": 172,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-10-26",
+          "median_lag_days": 24.0,
+          "p90_lag_days": 31.0,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.23255813953488372
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 80,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-10-26",
+          "median_lag_days": 24.0,
+          "p90_lag_days": 31.0,
+          "median_lag_all_reports_v1": 78.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 94,
+          "n_quarters_direct": 11,
+          "n_q4_derivable": 0,
+          "n_quarters": 11,
+          "first_end": "2016-01-31",
+          "last_end": "2025-10-26",
+          "median_lag_days": 25.0,
+          "p90_lag_days": 31.0,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.22340425531914893
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 60,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-11-14",
+          "median_lag_days": 6.0,
+          "p90_lag_days": 26.500000000000007,
+          "median_lag_all_reports_v1": 6.5,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.75
+        }
+      },
+      "covered": true
+    },
+    "AMZN": {
+      "cik": 1018724,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:SalesRevenueNet"
+          ],
+          "n_entries": 161,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 30.0,
+          "p90_lag_days": 35.0,
+          "median_lag_all_reports_v1": 390.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.32919254658385094
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss"
+          ],
+          "n_entries": 220,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 30.0,
+          "p90_lag_days": 35.0,
+          "median_lag_all_reports_v1": 353.0,
+          "annual_fy_entries": 86,
+          "frame_present_frac": 0.18181818181818182
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 161,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 30.0,
+          "p90_lag_days": 35.0,
+          "median_lag_all_reports_v1": 390.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2795031055900621
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity"
+          ],
+          "n_entries": 168,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 30.0,
+          "p90_lag_days": 35.0,
+          "median_lag_all_reports_v1": 390.5,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.23809523809523808
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 86,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 30.0,
+          "p90_lag_days": 35.0,
+          "median_lag_all_reports_v1": 118.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.46511627906976744
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 184,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 30.0,
+          "p90_lag_days": 35.0,
+          "median_lag_all_reports_v1": 390.0,
+          "annual_fy_entries": 86,
+          "frame_present_frac": 0.21739130434782608
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 118,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-20",
+          "last_end": "2025-12-31",
+          "median_lag_days": 20.5,
+          "p90_lag_days": 33.0,
+          "median_lag_all_reports_v1": 30.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6779661016949152
+        }
+      },
+      "covered": true
+    },
+    "TSLA": {
+      "cik": 1318605,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:Revenues"
+          ],
+          "n_entries": 203,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.0,
+          "p90_lag_days": 40.400000000000006,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 37,
+          "frame_present_frac": 0.31527093596059114
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 373,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.0,
+          "p90_lag_days": 40.400000000000006,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 75,
+          "frame_present_frac": 0.32171581769436997
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareBasicAndDiluted",
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 128,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.0,
+          "p90_lag_days": 40.400000000000006,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.3359375
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 231,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.0,
+          "p90_lag_days": 40.400000000000006,
+          "median_lag_all_reports_v1": 210.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.3203463203463203
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 78,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.0,
+          "p90_lag_days": 40.400000000000006,
+          "median_lag_all_reports_v1": 57.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5128205128205128
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 86,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 28.5,
+          "p90_lag_days": 40.0,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.26744186046511625
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 118,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 23.0,
+          "p90_lag_days": 39.0,
+          "median_lag_all_reports_v1": 29.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6440677966101694
+        }
+      },
+      "covered": true
+    },
+    "NFLX": {
+      "cik": 1065280,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:Revenues"
+          ],
+          "n_entries": 165,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 21.0,
+          "p90_lag_days": 27.1,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2727272727272727
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic"
+          ],
+          "n_entries": 169,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 21.0,
+          "p90_lag_days": 27.1,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.23668639053254437
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 161,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 21.0,
+          "p90_lag_days": 27.1,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2546583850931677
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity"
+          ],
+          "n_entries": 168,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 21.0,
+          "p90_lag_days": 27.1,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.23809523809523808
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 78,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 21.0,
+          "p90_lag_days": 27.1,
+          "median_lag_all_reports_v1": 29.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 125,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 21.0,
+          "p90_lag_days": 27.1,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.32
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 119,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-27",
+          "last_end": "2025-12-31",
+          "median_lag_days": 20.0,
+          "p90_lag_days": 27.0,
+          "median_lag_all_reports_v1": 22.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6638655462184874
+        }
+      },
+      "covered": true
+    },
+    "JPM": {
+      "cik": 19617,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:Revenues",
+            "us-gaap:RevenuesNetOfInterestExpense"
+          ],
+          "n_entries": 152,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 54.2,
+          "median_lag_all_reports_v1": 396.5,
+          "annual_fy_entries": 54,
+          "frame_present_frac": 0.32894736842105265
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic"
+          ],
+          "n_entries": 250,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 54.2,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 54,
+          "frame_present_frac": 0.3
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 125,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 54.2,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.32
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity"
+          ],
+          "n_entries": 115,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 54.2,
+          "median_lag_all_reports_v1": 217.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.34782608695652173
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 115,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 54.2,
+          "median_lag_all_reports_v1": 217.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.34782608695652173
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 86,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 32.0,
+          "p90_lag_days": 34.3,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.23255813953488372
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 67,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 33.0,
+          "p90_lag_days": 53.1,
+          "median_lag_all_reports_v1": 34.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.746268656716418
+        }
+      },
+      "covered": true
+    },
+    "GS": {
+      "cik": 886982,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenuesNetOfInterestExpense"
+          ],
+          "n_entries": 125,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.32
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 288,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 397.0,
+          "annual_fy_entries": 66,
+          "frame_present_frac": 0.3159722222222222
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 125,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.32
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity"
+          ],
+          "n_entries": 110,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 215.5,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.36363636363636365
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 103,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 124.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.3883495145631068
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 86,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 36.0,
+          "median_lag_all_reports_v1": 397.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.26744186046511625
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 118,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-02-05",
+          "last_end": "2025-12-31",
+          "median_lag_days": 25.5,
+          "p90_lag_days": 53.10000000000001,
+          "median_lag_all_reports_v1": 34.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6610169491525424
+        }
+      },
+      "covered": true
+    },
+    "XOM": {
+      "cik": 2115436,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:Revenues"
+          ],
+          "n_entries": 2,
+          "n_quarters_direct": 1,
+          "n_q4_derivable": 0,
+          "n_quarters": 1,
+          "first_end": "2025-06-30",
+          "last_end": "2025-06-30",
+          "median_lag_days": 399.0,
+          "p90_lag_days": 399.0,
+          "median_lag_all_reports_v1": 399.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 4,
+          "n_quarters_direct": 1,
+          "n_q4_derivable": 0,
+          "n_quarters": 1,
+          "first_end": "2025-06-30",
+          "last_end": "2025-06-30",
+          "median_lag_days": 399.0,
+          "p90_lag_days": 399.0,
+          "median_lag_all_reports_v1": 399.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 2,
+          "n_quarters_direct": 1,
+          "n_q4_derivable": 0,
+          "n_quarters": 1,
+          "first_end": "2025-06-30",
+          "last_end": "2025-06-30",
+          "median_lag_days": 399.0,
+          "p90_lag_days": 399.0,
+          "median_lag_all_reports_v1": 399.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 5,
+          "n_quarters_direct": 4,
+          "n_q4_derivable": 0,
+          "n_quarters": 4,
+          "first_end": "2024-12-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 444.5,
+          "p90_lag_days": 553.0,
+          "median_lag_all_reports_v1": 399.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 1.0
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 1,
+          "n_quarters_direct": 1,
+          "n_q4_derivable": 0,
+          "n_quarters": 1,
+          "first_end": "2025-12-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 215.0,
+          "p90_lag_days": 215.0,
+          "median_lag_all_reports_v1": 215.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 1.0
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 1,
+          "n_quarters_direct": 0,
+          "n_q4_derivable": 0,
+          "n_quarters": 0,
+          "first_end": "2025-06-30",
+          "last_end": "2025-06-30",
+          "median_lag_days": NaN,
+          "p90_lag_days": NaN,
+          "median_lag_all_reports_v1": 399.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.0
+        },
+        "shares_out": {
+          "tags_used": [
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 4,
+          "n_quarters_direct": 4,
+          "n_q4_derivable": 0,
+          "n_quarters": 4,
+          "first_end": "2024-12-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 444.5,
+          "p90_lag_days": 553.0,
+          "median_lag_all_reports_v1": 444.5,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 1.0
+        }
+      },
+      "covered": false
+    },
+    "CVX": {
+      "cik": 93410,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:Revenues"
+          ],
+          "n_entries": 223,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 36.0,
+          "p90_lag_days": 54.1,
+          "median_lag_all_reports_v1": 398.0,
+          "annual_fy_entries": 48,
+          "frame_present_frac": 0.31390134529147984
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 250,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 36.0,
+          "p90_lag_days": 54.1,
+          "median_lag_all_reports_v1": 398.0,
+          "annual_fy_entries": 54,
+          "frame_present_frac": 0.292
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 125,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 10,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 36.0,
+          "p90_lag_days": 54.1,
+          "median_lag_all_reports_v1": 398.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.312
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 255,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 36.0,
+          "p90_lag_days": 54.1,
+          "median_lag_all_reports_v1": 218.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.30980392156862746
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 78,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 36.0,
+          "p90_lag_days": 54.1,
+          "median_lag_all_reports_v1": 56.5,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 86,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 36.2,
+          "median_lag_all_reports_v1": 398.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.22093023255813954
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding"
+          ],
+          "n_entries": 40,
+          "n_quarters_direct": 30,
+          "n_q4_derivable": 0,
+          "n_quarters": 30,
+          "first_end": "2016-02-15",
+          "last_end": "2025-09-30",
+          "median_lag_days": 34.0,
+          "p90_lag_days": 38.0,
+          "median_lag_all_reports_v1": 34.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.925
+        }
+      },
+      "covered": true
+    },
+    "JNJ": {
+      "cik": 200406,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax"
+          ],
+          "n_entries": 125,
+          "n_quarters_direct": 29,
+          "n_q4_derivable": 3,
+          "n_quarters": 32,
+          "first_end": "2017-01-01",
+          "last_end": "2025-12-28",
+          "median_lag_days": 29.0,
+          "p90_lag_days": 404.6,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 24,
+          "frame_present_frac": 0.336
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss"
+          ],
+          "n_entries": 166,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 3,
+          "n_quarters": 37,
+          "first_end": "2016-01-03",
+          "last_end": "2025-12-28",
+          "median_lag_days": 31.0,
+          "p90_lag_days": 52.0,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 30,
+          "frame_present_frac": 0.2891566265060241
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 166,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 3,
+          "n_quarters": 37,
+          "first_end": "2016-01-03",
+          "last_end": "2025-12-28",
+          "median_lag_days": 31.0,
+          "p90_lag_days": 52.0,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 30,
+          "frame_present_frac": 0.2891566265060241
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 193,
+          "n_quarters_direct": 38,
+          "n_q4_derivable": 0,
+          "n_quarters": 38,
+          "first_end": "2016-01-03",
+          "last_end": "2025-12-28",
+          "median_lag_days": 31.0,
+          "p90_lag_days": 51.0,
+          "median_lag_all_reports_v1": 298.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.27461139896373055
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 83,
+          "n_quarters_direct": 38,
+          "n_q4_derivable": 0,
+          "n_quarters": 38,
+          "first_end": "2016-01-03",
+          "last_end": "2025-12-28",
+          "median_lag_days": 31.0,
+          "p90_lag_days": 51.0,
+          "median_lag_all_reports_v1": 115.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.4939759036144578
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 89,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-01-03",
+          "last_end": "2025-12-28",
+          "median_lag_days": 30.5,
+          "p90_lag_days": 36.1,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 30,
+          "frame_present_frac": 0.23595505617977527
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding"
+          ],
+          "n_entries": 40,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-02-19",
+          "last_end": "2025-10-17",
+          "median_lag_days": 6.0,
+          "p90_lag_days": 7.0,
+          "median_lag_all_reports_v1": 6.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.875
+        }
+      },
+      "covered": true
+    },
+    "PFE": {
+      "cik": 78003,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:Revenues"
+          ],
+          "n_entries": 108,
+          "n_quarters_direct": 25,
+          "n_q4_derivable": 4,
+          "n_quarters": 29,
+          "first_end": "2016-12-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 39.0,
+          "p90_lag_days": 92.50000000000048,
+          "median_lag_all_reports_v1": 401.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.39814814814814814
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 375,
+          "n_quarters_direct": 29,
+          "n_q4_derivable": 4,
+          "n_quarters": 33,
+          "first_end": "2016-04-03",
+          "last_end": "2025-12-31",
+          "median_lag_days": 39.0,
+          "p90_lag_days": 51.19999999999999,
+          "median_lag_all_reports_v1": 400.0,
+          "annual_fy_entries": 81,
+          "frame_present_frac": 0.32
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 125,
+          "n_quarters_direct": 29,
+          "n_q4_derivable": 4,
+          "n_quarters": 33,
+          "first_end": "2016-04-03",
+          "last_end": "2025-12-31",
+          "median_lag_days": 39.0,
+          "p90_lag_days": 51.19999999999999,
+          "median_lag_all_reports_v1": 400.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.32
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 246,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 0,
+          "n_quarters": 34,
+          "first_end": "2016-04-03",
+          "last_end": "2025-12-31",
+          "median_lag_days": 39.0,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 220.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.3252032520325203
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 78,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 0,
+          "n_quarters": 34,
+          "first_end": "2016-04-03",
+          "last_end": "2025-12-31",
+          "median_lag_days": 39.0,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 58.5,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5128205128205128
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 112,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-04-03",
+          "last_end": "2025-12-31",
+          "median_lag_days": 39.0,
+          "p90_lag_days": 39.0,
+          "median_lag_all_reports_v1": 401.0,
+          "annual_fy_entries": 39,
+          "frame_present_frac": 0.25892857142857145
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding"
+          ],
+          "n_entries": 40,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-02-25",
+          "last_end": "2025-10-29",
+          "median_lag_days": 3.0,
+          "p90_lag_days": 5.100000000000001,
+          "median_lag_all_reports_v1": 3.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.75
+        }
+      },
+      "covered": false
+    },
+    "LLY": {
+      "cik": 59478,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:Revenues"
+          ],
+          "n_entries": 153,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 6,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 31.5,
+          "p90_lag_days": 51.1,
+          "median_lag_all_reports_v1": 390.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2549019607843137
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 157,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 6,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 31.5,
+          "p90_lag_days": 51.1,
+          "median_lag_all_reports_v1": 390.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.34394904458598724
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 153,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 6,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 31.5,
+          "p90_lag_days": 51.1,
+          "median_lag_all_reports_v1": 390.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2549019607843137
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 152,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 31.5,
+          "p90_lag_days": 51.1,
+          "median_lag_all_reports_v1": 53.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.506578947368421
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 78,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 31.5,
+          "p90_lag_days": 51.1,
+          "median_lag_all_reports_v1": 53.5,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 86,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 30.0,
+          "p90_lag_days": 31.1,
+          "median_lag_all_reports_v1": 392.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.22093023255813954
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding"
+          ],
+          "n_entries": 40,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-02-12",
+          "last_end": "2025-10-27",
+          "median_lag_days": 4.0,
+          "p90_lag_days": 8.200000000000003,
+          "median_lag_all_reports_v1": 4.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.925
+        }
+      },
+      "covered": true
+    },
+    "PG": {
+      "cik": 80424,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:Revenues",
+            "us-gaap:SalesRevenueNet"
+          ],
+          "n_entries": 158,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 23.0,
+          "p90_lag_days": 37.0,
+          "median_lag_all_reports_v1": 383.5,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.21518987341772153
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 397,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 23.0,
+          "p90_lag_days": 37.0,
+          "median_lag_all_reports_v1": 384.0,
+          "annual_fy_entries": 87,
+          "frame_present_frac": 0.26448362720403024
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 158,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 23.0,
+          "p90_lag_days": 37.0,
+          "median_lag_all_reports_v1": 383.5,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.21518987341772153
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 175,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 23.0,
+          "p90_lag_days": 37.0,
+          "median_lag_all_reports_v1": 384.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.22285714285714286
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 87,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 23.0,
+          "p90_lag_days": 37.0,
+          "median_lag_all_reports_v1": 111.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.4367816091954023
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 87,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 19.5,
+          "p90_lag_days": 24.1,
+          "median_lag_all_reports_v1": 384.0,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.20689655172413793
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding"
+          ],
+          "n_entries": 40,
+          "n_quarters_direct": 31,
+          "n_q4_derivable": 0,
+          "n_quarters": 31,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 20.0,
+          "p90_lag_days": 24.1,
+          "median_lag_all_reports_v1": 20.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.975
+        }
+      },
+      "covered": true
+    },
+    "KO": {
+      "cik": 21344,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:Revenues"
+          ],
+          "n_entries": 99,
+          "n_quarters_direct": 24,
+          "n_q4_derivable": 6,
+          "n_quarters": 30,
+          "first_end": "2016-12-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 56.0,
+          "median_lag_all_reports_v1": 390.0,
+          "annual_fy_entries": 24,
+          "frame_present_frac": 0.3333333333333333
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 246,
+          "n_quarters_direct": 28,
+          "n_q4_derivable": 7,
+          "n_quarters": 35,
+          "first_end": "2016-04-01",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 51.4,
+          "median_lag_all_reports_v1": 389.0,
+          "annual_fy_entries": 54,
+          "frame_present_frac": 0.3089430894308943
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 123,
+          "n_quarters_direct": 28,
+          "n_q4_derivable": 7,
+          "n_quarters": 35,
+          "first_end": "2016-04-01",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 51.4,
+          "median_lag_all_reports_v1": 389.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.3089430894308943
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 229,
+          "n_quarters_direct": 37,
+          "n_q4_derivable": 0,
+          "n_quarters": 37,
+          "first_end": "2016-04-01",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 53.1,
+          "median_lag_all_reports_v1": 123.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.3406113537117904
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 77,
+          "n_quarters_direct": 37,
+          "n_q4_derivable": 0,
+          "n_quarters": 37,
+          "first_end": "2016-04-01",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 53.1,
+          "median_lag_all_reports_v1": 55.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.4935064935064935
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 85,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-04-01",
+          "last_end": "2025-12-31",
+          "median_lag_days": 27.0,
+          "p90_lag_days": 34.0,
+          "median_lag_all_reports_v1": 390.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.23529411764705882
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding"
+          ],
+          "n_entries": 40,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-02-22",
+          "last_end": "2025-10-21",
+          "median_lag_days": 3.0,
+          "p90_lag_days": 4.0,
+          "median_lag_all_reports_v1": 3.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.725
+        }
+      },
+      "covered": true
+    },
+    "CAT": {
+      "cik": 18230,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:Revenues",
+            "us-gaap:SalesRevenueNet"
+          ],
+          "n_entries": 197,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 35.0,
+          "p90_lag_days": 46.1,
+          "median_lag_all_reports_v1": 321.0,
+          "annual_fy_entries": 30,
+          "frame_present_frac": 0.25888324873096447
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 286,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 35.0,
+          "p90_lag_days": 46.1,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 54,
+          "frame_present_frac": 0.2972027972027972
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 161,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 35.0,
+          "p90_lag_days": 46.1,
+          "median_lag_all_reports_v1": 396.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2795031055900621
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 201,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 35.5,
+          "p90_lag_days": 49.400000000000006,
+          "median_lag_all_reports_v1": 397.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.19900497512437812
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 79,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 35.0,
+          "p90_lag_days": 46.1,
+          "median_lag_all_reports_v1": 50.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.4936708860759494
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 86,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 33.5,
+          "p90_lag_days": 36.1,
+          "median_lag_all_reports_v1": 397.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.26744186046511625
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 126,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 35.0,
+          "p90_lag_days": 46.1,
+          "median_lag_all_reports_v1": 45.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6349206349206349
+        }
+      },
+      "covered": true
+    },
+    "HON": {
+      "cik": 773840,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:SalesRevenueNet"
+          ],
+          "n_entries": 172,
+          "n_quarters_direct": 37,
+          "n_q4_derivable": 3,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 25.0,
+          "p90_lag_days": 43.2,
+          "median_lag_all_reports_v1": 321.5,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.313953488372093
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 294,
+          "n_quarters_direct": 37,
+          "n_q4_derivable": 3,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 25.0,
+          "p90_lag_days": 43.2,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 54,
+          "frame_present_frac": 0.2755102040816326
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 169,
+          "n_quarters_direct": 37,
+          "n_q4_derivable": 3,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 25.0,
+          "p90_lag_days": 43.2,
+          "median_lag_all_reports_v1": 382.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.27218934911242604
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 187,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 25.0,
+          "p90_lag_days": 43.2,
+          "median_lag_all_reports_v1": 117.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.41711229946524064
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 83,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 25.0,
+          "p90_lag_days": 43.2,
+          "median_lag_all_reports_v1": 110.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.46987951807228917
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 91,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 24.0,
+          "p90_lag_days": 29.2,
+          "median_lag_all_reports_v1": 385.0,
+          "annual_fy_entries": 30,
+          "frame_present_frac": 0.27472527472527475
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 117,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-29",
+          "last_end": "2025-12-31",
+          "median_lag_days": 23.0,
+          "p90_lag_days": 42.1,
+          "median_lag_all_reports_v1": 29.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6495726495726496
+        }
+      },
+      "covered": true
+    },
+    "NEE": {
+      "cik": 753308,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RegulatedAndUnregulatedOperatingRevenue"
+          ],
+          "n_entries": 151,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 6,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 26.0,
+          "p90_lag_days": 47.0,
+          "median_lag_all_reports_v1": 329.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2913907284768212
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 302,
+          "n_quarters_direct": 34,
+          "n_q4_derivable": 6,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 26.0,
+          "p90_lag_days": 47.0,
+          "median_lag_all_reports_v1": 329.0,
+          "annual_fy_entries": 54,
+          "frame_present_frac": 0.2913907284768212
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 158,
+          "n_quarters_direct": 35,
+          "n_q4_derivable": 5,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 26.0,
+          "p90_lag_days": 47.0,
+          "median_lag_all_reports_v1": 357.5,
+          "annual_fy_entries": 26,
+          "frame_present_frac": 0.2848101265822785
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 254,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 26.0,
+          "p90_lag_days": 47.0,
+          "median_lag_all_reports_v1": 207.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.31496062992125984
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 85,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 26.0,
+          "p90_lag_days": 47.0,
+          "median_lag_all_reports_v1": 113.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.47058823529411764
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 85,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 23.0,
+          "p90_lag_days": 26.299999999999997,
+          "median_lag_all_reports_v1": 388.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.23529411764705882
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 117,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 24.0,
+          "p90_lag_days": 46.1,
+          "median_lag_all_reports_v1": 28.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6837606837606838
+        }
+      },
+      "covered": true
+    },
+    "DUK": {
+      "cik": 1326160,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RegulatedAndUnregulatedOperatingRevenue",
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:Revenues",
+            "us-gaap:SalesRevenueNet"
+          ],
+          "n_entries": 182,
+          "n_quarters_direct": 37,
+          "n_q4_derivable": 3,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 38.5,
+          "p90_lag_days": 57.1,
+          "median_lag_all_reports_v1": 333.5,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.3021978021978022
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 436,
+          "n_quarters_direct": 37,
+          "n_q4_derivable": 3,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 38.5,
+          "p90_lag_days": 57.1,
+          "median_lag_all_reports_v1": 398.0,
+          "annual_fy_entries": 79,
+          "frame_present_frac": 0.28440366972477066
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareBasicAndDiluted",
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 177,
+          "n_quarters_direct": 37,
+          "n_q4_derivable": 3,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 38.5,
+          "p90_lag_days": 57.1,
+          "median_lag_all_reports_v1": 334.0,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.3333333333333333
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 254,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 38.5,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 218.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.31496062992125984
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 90,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 38.5,
+          "p90_lag_days": 56.1,
+          "median_lag_all_reports_v1": 129.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.4444444444444444
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities"
+          ],
+          "n_entries": 87,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 39.0,
+          "p90_lag_days": 40.2,
+          "median_lag_all_reports_v1": 398.0,
+          "annual_fy_entries": 29,
+          "frame_present_frac": 0.22988505747126436
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 119,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-01-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 33.5,
+          "p90_lag_days": 53.400000000000006,
+          "median_lag_all_reports_v1": 39.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.6638655462184874
+        }
+      },
+      "covered": true
+    },
+    "AMT": {
+      "cik": 1053507,
+      "concepts": {
+        "revenue": {
+          "tags_used": [
+            "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+            "us-gaap:Revenues",
+            "us-gaap:SalesRevenueNet"
+          ],
+          "n_entries": 255,
+          "n_quarters_direct": 36,
+          "n_q4_derivable": 4,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.5,
+          "p90_lag_days": 56.2,
+          "median_lag_all_reports_v1": 334.0,
+          "annual_fy_entries": 47,
+          "frame_present_frac": 0.33725490196078434
+        },
+        "net_income": {
+          "tags_used": [
+            "us-gaap:NetIncomeLoss",
+            "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+            "us-gaap:ProfitLoss"
+          ],
+          "n_entries": 413,
+          "n_quarters_direct": 36,
+          "n_q4_derivable": 4,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.5,
+          "p90_lag_days": 56.2,
+          "median_lag_all_reports_v1": 333.0,
+          "annual_fy_entries": 66,
+          "frame_present_frac": 0.29055690072639223
+        },
+        "eps_diluted": {
+          "tags_used": [
+            "us-gaap:EarningsPerShareDiluted"
+          ],
+          "n_entries": 159,
+          "n_quarters_direct": 36,
+          "n_q4_derivable": 4,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.5,
+          "p90_lag_days": 56.2,
+          "median_lag_all_reports_v1": 334.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2893081761006289
+        },
+        "equity": {
+          "tags_used": [
+            "us-gaap:StockholdersEquity",
+            "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"
+          ],
+          "n_entries": 250,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.5,
+          "p90_lag_days": 56.2,
+          "median_lag_all_reports_v1": 212.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.32
+        },
+        "assets": {
+          "tags_used": [
+            "us-gaap:Assets"
+          ],
+          "n_entries": 108,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.5,
+          "p90_lag_days": 56.2,
+          "median_lag_all_reports_v1": 210.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.37037037037037035
+        },
+        "op_cashflow": {
+          "tags_used": [
+            "us-gaap:NetCashProvidedByUsedInOperatingActivities",
+            "us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"
+          ],
+          "n_entries": 85,
+          "n_quarters_direct": 10,
+          "n_q4_derivable": 0,
+          "n_quarters": 10,
+          "first_end": "2016-03-31",
+          "last_end": "2025-12-31",
+          "median_lag_days": 29.0,
+          "p90_lag_days": 32.1,
+          "median_lag_all_reports_v1": 392.0,
+          "annual_fy_entries": 27,
+          "frame_present_frac": 0.2823529411764706
+        },
+        "shares_out": {
+          "tags_used": [
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesOutstanding"
+          ],
+          "n_entries": 117,
+          "n_quarters_direct": 40,
+          "n_q4_derivable": 0,
+          "n_quarters": 40,
+          "first_end": "2016-02-19",
+          "last_end": "2025-12-31",
+          "median_lag_days": 18.0,
+          "p90_lag_days": 55.10000000000001,
+          "median_lag_all_reports_v1": 29.0,
+          "annual_fy_entries": 0,
+          "frame_present_frac": 0.5982905982905983
+        }
+      },
+      "covered": true
+    }
+  },
+  "revenue_tags": [
+    "us-gaap:RegulatedAndUnregulatedOperatingRevenue",
+    "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+    "us-gaap:Revenues",
+    "us-gaap:RevenuesNetOfInterestExpense",
+    "us-gaap:SalesRevenueNet"
+  ]
+}
