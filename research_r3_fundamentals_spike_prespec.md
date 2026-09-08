@@ -27,3 +27,9 @@ Also recorded regardless of verdict: tag heterogeneity (distinct revenue tags ne
 ## What a FEASIBLE verdict does and does not license
 
 It licenses building the dataset and an R3-full pre-spec. It does not imply the features carry time-axis signal — that is R3-full's question, with its own anchors, and the honest prior there is low-to-medium (value/quality premia are themselves regime-dependent; 2023 was a growth year).
+
+---
+
+## Instrument note (appended after the v1 run, before the v2 run; criteria unchanged)
+
+The v1 run (0/20, 2026-09-08) is **void as a measurement**, not a data verdict: (1) filing lag was computed as the median over *all* re-reports of a period, which is dominated by prior-year comparatives re-filed ~365 days later (income-statement lags of 380–400 days are physically impossible under 40/90-day deadlines; balance-sheet and dei share counts, which carry few or no comparatives, showed 5–130 days — the internal control that exposed the artifact); (2) alternate tags were first-match rather than unioned (AAPL's 2018 tag change produced "8 quarters"); (3) `start` was ignored, mixing quarterly and YTD values. Instrument v2: lag = first filing date per period (the point-in-time availability the pre-spec intends); alternates unioned; duration filter (80–100 d = quarterly; 350–380 d = annual) with Q4 counted as derivable when FY and Q1–Q3 exist; bank/utility/NCI tag variants added. Raw company-facts JSON cached from the v1 fetch; v2 is an offline re-score. The v1 lag is retained in the JSON as `median_lag_all_reports_v1` for the record.

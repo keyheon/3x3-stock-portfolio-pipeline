@@ -28,18 +28,29 @@ TICKERS = ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'TSLA', 'NFLX', 'JPM', 'GS',
            'XOM', 'CVX', 'JNJ', 'PFE', 'LLY', 'PG', 'KO', 'CAT', 'HON',
            'NEE', 'DUK', 'AMT']
 
+# Instrument v2: alternates are UNIONED (v1 used first-match). Bank/utility/
+# noncontrolling-interest variants added after the v1 run exposed gaps.
 CONCEPTS = {
     'revenue': [('us-gaap', 'Revenues'),
                 ('us-gaap', 'RevenueFromContractWithCustomerExcludingAssessedTax'),
-                ('us-gaap', 'SalesRevenueNet')],
-    'net_income': [('us-gaap', 'NetIncomeLoss')],
-    'eps_diluted': [('us-gaap', 'EarningsPerShareDiluted')],
-    'equity': [('us-gaap', 'StockholdersEquity')],
+                ('us-gaap', 'SalesRevenueNet'),
+                ('us-gaap', 'RevenuesNetOfInterestExpense'),
+                ('us-gaap', 'RegulatedAndUnregulatedOperatingRevenue'),
+                ('us-gaap', 'OperatingRevenue')],
+    'net_income': [('us-gaap', 'NetIncomeLoss'),
+                   ('us-gaap', 'ProfitLoss'),
+                   ('us-gaap', 'NetIncomeLossAvailableToCommonStockholdersBasic')],
+    'eps_diluted': [('us-gaap', 'EarningsPerShareDiluted'),
+                    ('us-gaap', 'EarningsPerShareBasicAndDiluted')],
+    'equity': [('us-gaap', 'StockholdersEquity'),
+               ('us-gaap', 'StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest')],
     'assets': [('us-gaap', 'Assets')],
-    'op_cashflow': [('us-gaap', 'NetCashProvidedByUsedInOperatingActivities')],
+    'op_cashflow': [('us-gaap', 'NetCashProvidedByUsedInOperatingActivities'),
+                    ('us-gaap', 'NetCashProvidedByUsedInOperatingActivitiesContinuingOperations')],
     'shares_out': [('dei', 'EntityCommonStockSharesOutstanding'),
                    ('us-gaap', 'CommonStockSharesOutstanding')],
 }
+DURATION_CONCEPTS = {'revenue', 'net_income', 'eps_diluted', 'op_cashflow'}
 CORE = ['revenue', 'net_income', 'equity', 'assets']
 WINDOW = ('2016-01-01', '2025-12-31')
 MIN_QUARTERS = 30
@@ -88,42 +99,77 @@ def entries_for(facts, ns, tag):
         for e in arr:
             if e.get('form') not in FORMS:
                 continue
-            rows.append({'unit': unit, 'end': e.get('end'), 'val': e.get('val'),
+            rows.append({'unit': unit, 'start': e.get('start'),
+                         'end': e.get('end'), 'val': e.get('val'),
                          'filed': e.get('filed'), 'form': e.get('form'),
                          'fy': e.get('fy'), 'fp': e.get('fp'),
-                         'frame': e.get('frame')})
+                         'frame': e.get('frame'), 'tag': f'{ns}:{tag}'})
     if not rows:
         return None
     df = pd.DataFrame(rows)
     df['end'] = pd.to_datetime(df['end'])
     df['filed'] = pd.to_datetime(df['filed'])
+    df['start'] = pd.to_datetime(df['start'], errors='coerce')
     return df
 
 
-def score_concept(facts, alternates):
-    for ns, tag in alternates:
-        df = entries_for(facts, ns, tag)
-        if df is None:
-            continue
-        w = df[(df['end'] >= WINDOW[0]) & (df['end'] <= WINDOW[1])]
-        if len(w) == 0:
-            continue
-        # quarters covered: distinct period-end quarters with a 10-Q or 10-K value
-        quarters = set(w['end'].dt.to_period('Q').astype(str))
-        lag = (w['filed'] - w['end']).dt.days
-        annual_only = int(((w['form'] == '10-K') & (w['fp'] == 'FY')).sum())
-        return {
-            'tag': f'{ns}:{tag}',
-            'n_entries': int(len(w)),
-            'n_quarters': int(len(quarters)),
-            'first_end': str(w['end'].min().date()),
-            'last_end': str(w['end'].max().date()),
-            'median_lag_days': float(lag.median()),
-            'p90_lag_days': float(lag.quantile(0.9)),
-            'annual_fy_entries': annual_only,
-            'frame_present_frac': float(w['frame'].notna().mean()),
-        }
-    return None
+def score_concept(facts, alternates, is_duration):
+    """Instrument v2. Union across alternate tags; point-in-time lag = FIRST
+    filing date per period (v1 took the median over all re-reports, which is
+    dominated by prior-year comparatives ~365d later — an artifact).
+    Duration concepts: quarterly values = start..end of 80-100 days; annual
+    (FY) values counted as derivable Q4 when Q1-Q3 of that year exist."""
+    frames = [entries_for(facts, ns, tag) for ns, tag in alternates]
+    frames = [f for f in frames if f is not None]
+    if not frames:
+        return None
+    df = pd.concat(frames, ignore_index=True)
+    w = df[(df['end'] >= WINDOW[0]) & (df['end'] <= WINDOW[1])].copy()
+    if len(w) == 0:
+        return None
+    tags_used = sorted(w['tag'].unique())
+    # v1-style lag (all re-reports) kept for the record
+    lag_all = (w['filed'] - w['end']).dt.days
+
+    if is_duration:
+        dur = (w['end'] - w['start']).dt.days
+        q = w[(dur >= 80) & (dur <= 100)]
+        fy = w[(dur >= 350) & (dur <= 380)]
+    else:
+        q = w
+        fy = w.iloc[0:0]
+
+    # first availability per period end
+    first_q = q.groupby('end')['filed'].min()
+    q_quarters = set(first_q.index.to_period('Q').astype(str))
+    lag_first = (first_q - first_q.index).dt.days
+
+    derivable = set()
+    fy_lags = []
+    if len(fy):
+        first_fy = fy.groupby('end')['filed'].min()
+        for e, f in first_fy.items():
+            per = pd.Period(e, freq='Q')
+            prior = {str(per - k) for k in (1, 2, 3)}
+            if str(per) not in q_quarters and prior <= q_quarters:
+                derivable.add(str(per))
+                fy_lags.append((f - e).days)
+    total = q_quarters | derivable
+    all_lags = list(lag_first.values) + fy_lags
+    return {
+        'tags_used': tags_used,
+        'n_entries': int(len(w)),
+        'n_quarters_direct': int(len(q_quarters)),
+        'n_q4_derivable': int(len(derivable)),
+        'n_quarters': int(len(total)),
+        'first_end': str(w['end'].min().date()),
+        'last_end': str(w['end'].max().date()),
+        'median_lag_days': float(np.median(all_lags)) if all_lags else float('nan'),
+        'p90_lag_days': float(np.percentile(all_lags, 90)) if all_lags else float('nan'),
+        'median_lag_all_reports_v1': float(lag_all.median()),
+        'annual_fy_entries': int(len(fy)),
+        'frame_present_frac': float(w['frame'].notna().mean()),
+    }
 
 
 def main():
@@ -144,7 +190,8 @@ def main():
             per_ticker[tk] = {'error': str(e)}
             print(f"[{tk}] fetch error: {e}")
             continue
-        res = {k: score_concept(facts, alts) for k, alts in CONCEPTS.items()}
+        res = {k: score_concept(facts, alts, k in DURATION_CONCEPTS)
+               for k, alts in CONCEPTS.items()}
         core_ok = all(res[k] is not None and res[k]['n_quarters'] >= MIN_QUARTERS
                       and res[k]['median_lag_days'] <= MAX_LAG_DAYS for k in CORE)
         per_ticker[tk] = {'cik': c, 'concepts': res, 'covered': bool(core_ok)}
@@ -159,8 +206,9 @@ def main():
     verdict = ('FEASIBLE' if n_cov >= 16 else
                'MARGINAL' if n_cov >= 12 else 'NOT FEASIBLE')
 
-    rev_tags = sorted({v['concepts']['revenue']['tag'] for v in per_ticker.values()
-                       if 'concepts' in v and v['concepts']['revenue']})
+    rev_tags = sorted({t for v in per_ticker.values() if 'concepts' in v
+                       and v['concepts']['revenue']
+                       for t in v['concepts']['revenue']['tags_used']})
     lags = [v['concepts'][k]['median_lag_days'] for v in per_ticker.values()
             if 'concepts' in v for k in CORE if v['concepts'][k]]
     annual_share = []
@@ -172,7 +220,10 @@ def main():
             if r and r['n_entries']:
                 annual_share.append(r['annual_fy_entries'] / r['n_entries'])
 
-    lines = ['# R3 Spike — EDGAR Point-in-Time Fundamentals Feasibility\n',
+    lines = ['# R3 Spike — EDGAR Point-in-Time Fundamentals Feasibility (instrument v2)\n',
+             'Lag = first filing per period (v1 median-over-re-reports lag kept in JSON as '
+             'median_lag_all_reports_v1 to document the comparatives artifact). '
+             'Quarters = direct quarterly values + Q4 derivable from FY.\n',
              f'Run date: {date.today()}. Sample: {len(TICKERS)} tickers. '
              f'Criteria: core concepts {CORE} each with >= {MIN_QUARTERS} quarters '
              f'in {WINDOW[0][:4]}-{WINDOW[1][:4]} and median filing lag <= {MAX_LAG_DAYS} days.\n',
