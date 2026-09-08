@@ -43,3 +43,9 @@ Paired per-fold ΔIC over binding folds: **PROMISING** = mean ΔIC ≥ +0.02 AND
 ## Decision map
 
 PROMISING → R3-3seed pre-spec amendment (3 seeds; then and only then any gate discussion, with dependence-aware statistics and beta-adjusted alpha per the v2.3.18 disposition). DEAD → fundamentals-as-input card closes; R3b (value factors) is not automatically pursued — it needs its own case. MIXED → record; continuation by amendment. The v2.3.17 FAIL and v2.3.18 disposition remain in force regardless.
+
+---
+
+## Build amendment (2026-09-08, before any feature-vs-return evaluation)
+
+Build v1 (526 tickers) reached 78.3% availability with 78 tickers below 50%. Three causes, two of them instrument defects: (1) ETFs and foreign filers (20-F/40-F/6-K) have no 10-Q/10-K company facts — legitimately 0, by design; (2) issuers on 12/16-week fiscal calendars (COST, KR, AZO, DPZ, PEP) never produced a Q4 under the 80–100-day quarter window → contiguity failed → all ratios NaN; (3) any single missing concept (regional banks without a total-revenue tag) zeroed all eight ratios. Build v2: quarter windows widened to 70–120 days (direct, derived, and contiguity); ratios computed independently per available inputs; **`f_available` becomes the fraction of the eight ratios computable** (was binary) — rank-normalization and the `filed < t` rule unchanged. Coverage engineering only; no return data was consulted.

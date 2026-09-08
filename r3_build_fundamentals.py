@@ -134,7 +134,7 @@ def quarterly_series(facts, alternates):
     df = df.drop_duplicates(['start', 'end'], keep='first')   # first-filed per period
     df['dur'] = (df['end'] - df['start']).dt.days
     out = {}
-    direct = df[(df['dur'] >= 80) & (df['dur'] <= 100)]
+    direct = df[(df['dur'] >= 70) & (df['dur'] <= 120)]   # 12-16 week quarters
     for _, r in direct.iterrows():
         out[r['end']] = (r['filed'], r['val'], 'direct')
     for start, g in df.groupby('start'):
@@ -143,7 +143,7 @@ def quarterly_series(facts, alternates):
         for _, r in g.iterrows():
             if prev is not None:
                 gap = (r['end'] - prev['end']).days
-                if 80 <= gap <= 100 and r['end'] not in out:
+                if 70 <= gap <= 120 and r['end'] not in out:
                     out[r['end']] = (max(r['filed'], prev['filed']),
                                      r['val'] - prev['val'], 'derived')
             prev = r
@@ -175,47 +175,64 @@ def _last_n(q, t, n):
         return None
     w = a.iloc[-n:]
     span = (w['end'].iloc[-1] - w['end'].iloc[0]).days
-    if not ((n - 1) * 80 <= span <= (n - 1) * 100):
+    if not ((n - 1) * 70 <= span <= (n - 1) * 120):
         return None
     return w
 
 
 def ratios_at(t, q_rev, q_ni, q_cfo, i_eq, i_as):
+    """Each ratio is computed when its own inputs are available (build
+    amendment: v1 required every concept, so one missing tag — e.g. banks
+    without a total-revenue tag — zeroed all eight). Returns ratios, audit,
+    and the fraction of the eight ratios computable."""
     r = {k: np.nan for k in RATIOS}
     audit = {}
     rev8 = _last_n(q_rev, t, 8)
     ni8 = _last_n(q_ni, t, 8)
+    ni4 = ni8 if ni8 is not None else _last_n(q_ni, t, 4)
     cfo4 = _last_n(q_cfo, t, 4)
     eq = i_eq[i_eq['avail'] < t] if i_eq is not None else None
     asst = i_as[i_as['avail'] < t] if i_as is not None else None
-    if rev8 is None or ni8 is None or cfo4 is None or eq is None or len(eq) == 0 \
-            or asst is None or len(asst) == 0:
-        return r, audit, False
-    rev_ttm, rev_prior = rev8['val'].iloc[-4:].sum(), rev8['val'].iloc[:4].sum()
-    ni_ttm, ni_prior = ni8['val'].iloc[-4:].sum(), ni8['val'].iloc[:4].sum()
-    cfo_ttm = cfo4['val'].sum()
-    eq_l = eq['val'].iloc[-1]
-    as_l = asst['val'].iloc[-1]
-    target = asst['end'].iloc[-1] - pd.Timedelta(days=365)
-    idx = (asst['end'] - target).abs().idxmin()
-    as_4q = asst.loc[idx, 'val'] if abs((asst.loc[idx, 'end'] - target).days) <= 60 else np.nan
-    if as_l <= 0:
-        return r, audit, False
-    r['f_roe'] = ni_ttm / eq_l if eq_l > 0 else np.nan
-    r['f_net_margin'] = ni_ttm / rev_ttm if rev_ttm > 0 else np.nan
-    r['f_asset_growth'] = as_l / as_4q - 1 if as_4q > 0 else np.nan
-    r['f_accruals'] = (ni_ttm - cfo_ttm) / as_l
-    r['f_rev_growth'] = rev_ttm / rev_prior - 1 if rev_prior > 0 else np.nan
-    r['f_cfo_assets'] = cfo_ttm / as_l
-    r['f_leverage'] = eq_l / as_l
-    r['f_ni_growth'] = (ni_ttm - ni_prior) / as_l
-    audit = {'ni_latest_end': str(ni8['end'].iloc[-1].date()),
-             'ni_latest_avail': str(ni8['avail'].iloc[-1].date()),
-             'ni_kinds': ''.join('D' if k == 'direct' else 'x' for k in ni8['kind'].iloc[-4:]),
-             'assets_latest_end': str(asst['end'].iloc[-1].date()),
-             'assets_latest_avail': str(asst['avail'].iloc[-1].date())}
-    ok = all(np.isfinite(r[k]) for k in RATIOS)
-    return r, audit, ok
+    eq_l = eq['val'].iloc[-1] if eq is not None and len(eq) else np.nan
+    as_l = asst['val'].iloc[-1] if asst is not None and len(asst) else np.nan
+    if not (np.isfinite(as_l) and as_l > 0):
+        as_l = np.nan
+    as_4q = np.nan
+    if asst is not None and len(asst) and np.isfinite(as_l):
+        target = asst['end'].iloc[-1] - pd.Timedelta(days=365)
+        idx = (asst['end'] - target).abs().idxmin()
+        if abs((asst.loc[idx, 'end'] - target).days) <= 60 and asst.loc[idx, 'val'] > 0:
+            as_4q = asst.loc[idx, 'val']
+    ni_ttm = ni4['val'].iloc[-4:].sum() if ni4 is not None else np.nan
+    ni_prior = ni8['val'].iloc[:4].sum() if ni8 is not None else np.nan
+    rev_ttm = rev8['val'].iloc[-4:].sum() if rev8 is not None else np.nan
+    rev_prior = rev8['val'].iloc[:4].sum() if rev8 is not None else np.nan
+    cfo_ttm = cfo4['val'].sum() if cfo4 is not None else np.nan
+
+    if np.isfinite(ni_ttm) and np.isfinite(eq_l) and eq_l > 0:
+        r['f_roe'] = ni_ttm / eq_l
+    if np.isfinite(ni_ttm) and np.isfinite(rev_ttm) and rev_ttm > 0:
+        r['f_net_margin'] = ni_ttm / rev_ttm
+    if np.isfinite(as_l) and np.isfinite(as_4q):
+        r['f_asset_growth'] = as_l / as_4q - 1
+    if np.isfinite(ni_ttm) and np.isfinite(cfo_ttm) and np.isfinite(as_l):
+        r['f_accruals'] = (ni_ttm - cfo_ttm) / as_l
+    if np.isfinite(rev_ttm) and np.isfinite(rev_prior) and rev_prior > 0:
+        r['f_rev_growth'] = rev_ttm / rev_prior - 1
+    if np.isfinite(cfo_ttm) and np.isfinite(as_l):
+        r['f_cfo_assets'] = cfo_ttm / as_l
+    if np.isfinite(eq_l) and np.isfinite(as_l):
+        r['f_leverage'] = eq_l / as_l
+    if np.isfinite(ni_ttm) and np.isfinite(ni_prior) and np.isfinite(as_l):
+        r['f_ni_growth'] = (ni_ttm - ni_prior) / as_l
+    if ni4 is not None and asst is not None and len(asst):
+        audit = {'ni_latest_end': str(ni4['end'].iloc[-1].date()),
+                 'ni_latest_avail': str(ni4['avail'].iloc[-1].date()),
+                 'ni_kinds': ''.join('D' if k == 'direct' else 'x' for k in ni4['kind'].iloc[-4:]),
+                 'assets_latest_end': str(asst['end'].iloc[-1].date()),
+                 'assets_latest_avail': str(asst['avail'].iloc[-1].date())}
+    frac = float(np.mean([np.isfinite(r[k]) for k in RATIOS]))
+    return r, audit, frac
 
 
 # ---------------- main ----------------
@@ -262,10 +279,10 @@ def main():
         ok_count = 0
         for j in idx:
             t = pd.Timestamp(str(s_dt[j]))
-            r, aud, ok = ratios_at(t, q_rev, q_ni, q_cfo, i_eq, i_as)
+            r, aud, frac = ratios_at(t, q_rev, q_ni, q_cfo, i_eq, i_as)
             raw_ratio[j] = [r[k] for k in RATIOS]
-            avail[j] = 1.0 if ok else 0.0
-            ok_count += int(ok)
+            avail[j] = frac                      # fraction of the 8 ratios computable
+            ok_count += int(frac >= 0.999)
             for atk, amonth in AUDIT_SAMPLES:
                 if tk == atk and s_dt[j].startswith(amonth) and aud:
                     audits.append({'ticker': tk, 'snapshot': s_dt[j], **aud,
@@ -294,16 +311,19 @@ def main():
 
     # audit report
     years = np.array([s[:4] for s in s_dt])
-    lines = ['# R3 fundamentals build — audit\n',
-             f'Built {len(tickers)} tickers; samples {n:,}; overall availability '
-             f'{avail[np.isin(s_tk, tickers)].mean()*100:.1f}% of built-ticker samples.\n',
-             '## Availability by year (built tickers)\n', '| year | available |', '|---|---:|']
     mask_built = np.isin(s_tk, tickers)
+    full = (avail >= 0.999)
+    lines = ['# R3 fundamentals build — audit (build v2: widened quarter windows, per-ratio availability)\n',
+             f'Built {len(tickers)} tickers; samples {n:,}; mean ratio availability '
+             f'{avail[mask_built].mean()*100:.1f}%; all-8-available '
+             f'{full[mask_built].mean()*100:.1f}% of built-ticker samples.\n',
+             '## Availability by year (built tickers)\n',
+             '| year | mean ratio avail | all-8 avail |', '|---|---:|---:|']
     for y in sorted(set(years)):
         m = (years == y) & mask_built
-        lines.append(f'| {y} | {avail[m].mean()*100:.1f}% |')
+        lines.append(f'| {y} | {avail[m].mean()*100:.1f}% | {full[m].mean()*100:.1f}% |')
     low = sorted([(c, tk) for tk, c in per_ticker_cov.items() if c < 0.5])
-    lines += ['', f'Tickers with < 50% availability: {len(low)} / {len(tickers)}',
+    lines += ['', f'Tickers with < 50% all-8 availability: {len(low)} / {len(tickers)}',
               ', '.join(f'{tk}({c*100:.0f}%)' for c, tk in low[:40]) or '(none)', '',
               '## Point-in-time audit samples (verify: avail date < snapshot; latest NI period '
               'is the most recent quarter FILED before the snapshot)\n']
