@@ -42,3 +42,13 @@ Multiple-candidates note: with 4 new descriptors, one clearing |ρ| ≥ 0.25 by 
 - MIXED → record; any continuation requires its own pre-spec.
 
 Honest prior, stated in advance: the controls are close cousins of features the v2.3.17 model already had (VIX, vol structure) and still failed with — the most likely outcome is a clean null obtained cheaply, which is a result, not a failure of R1.
+
+---
+
+## Result Record (2026-09-08, run on frozen SPY/VIX fetched same day)
+
+**Mechanical verdicts (primary table)**: vr10 DEAD (+0.270, 5/5 — cleared magnitude and consistency, failed the control bar), spec_slope DEAD (−0.273, 4/5 — same), spec_entropy DEAD (+0.036, 3/5), hf_ratio DEAD (−0.058, 3/5). Best control |wmean| = 0.353 (VIX). All four new descriptors collapse to ≈0 at the 126-day secondary window — window-fragility is further evidence against them. **Per the decision map, the spectral/regime-descriptor direction is closed.** Remaining (b)-branch cards: forward-looking features, retraining cadence.
+
+**Unanchored observation (hypothesis-generating only, no anchors existed for it)**: the controls themselves predict within-fold IC — VIX +0.353 (5/5), ret126 −0.296 (4/5), rv21 +0.259 (4/5): the model ranks better on high-fear dates within the same year. Recorded with its caveats: (a) discovered in-sample without a pre-stated hypothesis; (b) plausibly partly mechanical — high-VIX dates carry larger cross-sectional return dispersion, which stabilizes IC estimation independent of skill; (c) date dependence (D5) makes effective n per fold far below 25; (d) the link to deployment-form alpha is weaker (rv21 +0.173, VIX +0.051 at 2/5); (e) the model held these variables as features and still failed the absolute gate — conditional deployment is a distinct claim. Any pursuit requires an R2 pre-spec that labels this data-derived hypothesis honestly and confronts the conditional-deployment selection trap. Not pursued today.
+
+**R1 closed.**
