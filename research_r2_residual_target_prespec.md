@@ -42,3 +42,16 @@ Seed-noise context: v2.3.17 per-seed binding-mean ICs were +0.0053/+0.0148/+0.00
 Explicitly out of scope for this screen (named now, possible R2-full variants): rank-transformed target, sector-neutral residualization (changes the ranking target itself), shorter horizon (needs cache rebuild), quarterly retraining cadence. The v2.3.17 FAIL and the v2.3.18 disposition remain in force regardless of this screen's outcome; only a 3-seed R2-full could feed any future gate discussion, which would additionally require dependence-aware statistics and beta-adjusted alpha.
 
 **Prior, stated in advance: medium-low** for B−A; low for C−A (v2.3.3 measured macro's cross-sectional harm, but its time-axis role under the NLL architecture is unmeasured). A clean null is a cheap, useful result.
+
+---
+
+## Result Record (seed 42, 2026-09-09; verdict.md, commit-reproducible via r2_verdict.py)
+
+Equivalence bit-exact (REUSE OK). **B−A DEAD** (mean +0.0217 but 2/5 positive — the consistency clause did its job: the mean is carried by fold 3). **C−A MIXED** (+0.0465, 3/5; the two negatives, −0.007 and −0.005, are at seed-noise scale). **B−C DEAD** (−0.0249, 1/5): target reshaping adds nothing beyond macro removal and mildly hurts. **Attribution: macro removal is the driver.** The v2.3.17 failure signature — the 2023 inversion (base −0.088, all three seeds) — becomes +0.116 (ICIR 0.84, 76% dates positive) without macro features, consistent with the diagnosed mechanism (macro = regime identity → regime-conditional mapping → inversion in a novel regime) and with the v2.3.3 cross-sectional ablation. Single-seed nomacro aggregate (mean IC +0.0518, 5/5, alpha +13.05%p) is recorded for the record only: one seed, post-hoc arm, alpha not beta-adjusted — **not a gate result under any rule of this project**.
+
+## Amendment 1 — R2-full: three-seed replication of the no-macro arm (fixed before run)
+
+**Runs**: `--arm nomacro` at seeds 1 and 2 (seed 42 committed), binding folds, N=20; A = committed v2.3.17 three-seed results.
+**Primary anchor (3-seed means per fold)**: C−A PROMISING = mean ΔIC ≥ +0.02 AND ΔIC > 0 in ≥ 4/5 folds; DEAD = mean ≤ 0 OR positive ≤ 2/5; else MIXED. Reported alongside, not anchored: nomacro 3-seed aggregate (mean IC, positive folds on 3-seed means, mean alpha, per-seed dispersion).
+**Decision map**: PROMISING → design a **new pre-registered gate** for the no-macro configuration per the v2.3.18 disposition (dependence-aware statistics; beta-adjusted alpha primary). That gate must confront selection-under-test: the configuration was chosen on these same folds. Preferred remedy, named now: **forward hold-out** — train through 2025 and score 2026+ snapshots as they accrue (true out-of-sample, cost = calendar time); alternative: an explicit deflation/haircut for the number of arms screened (R1 4 descriptors, R2 3 arms). DEAD/MIXED → macro-removal effect judged not seed-robust; record; R3 proceeds on the raw base.
+**Sequencing**: R2-full runs before R3; R3's base arm is decided by this amendment's verdict (see R3-full pre-spec, sequencing note).

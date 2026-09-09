@@ -49,3 +49,9 @@ PROMISING → R3-3seed pre-spec amendment (3 seeds; then and only then any gate 
 ## Build amendment (2026-09-08, before any feature-vs-return evaluation)
 
 Build v1 (526 tickers) reached 78.3% availability with 78 tickers below 50%. Three causes, two of them instrument defects: (1) ETFs and foreign filers (20-F/40-F/6-K) have no 10-Q/10-K company facts — legitimately 0, by design; (2) issuers on 12/16-week fiscal calendars (COST, KR, AZO, DPZ, PEP) never produced a Q4 under the 80–100-day quarter window → contiguity failed → all ratios NaN; (3) any single missing concept (regional banks without a total-revenue tag) zeroed all eight ratios. Build v2: quarter windows widened to 70–120 days (direct, derived, and contiguity); ratios computed independently per available inputs; **`f_available` becomes the fraction of the eight ratios computable** (was binary) — rank-normalization and the `filed < t` rule unchanged. Coverage engineering only; no return data was consulted.
+
+---
+
+## Sequencing note (2026-09-09, before any R3 run)
+
+R2 seed-42 judged C−A MIXED (not PROMISING), so the base rule as written would select the v2.3.17 raw base. R2 Amendment 1 (three-seed replication of no-macro) runs first; R3's base is set by its verdict: PROMISING → base = nomacro (`--drop-macro`, raw target); otherwise → v2.3.17 raw base. Recorded before any R3 training; R3 anchors unchanged.
