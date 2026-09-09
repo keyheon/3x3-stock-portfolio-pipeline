@@ -1,0 +1,73 @@
+{
+  "arm": "base",
+  "prespec": "research_r2_residual_target_prespec.md",
+  "equivalence_vs_v2317": {
+    "1": {
+      "n_dates_matched": 25,
+      "fold_ic_ref": -0.008544775413457039,
+      "fold_ic_new": -0.008544775413457046,
+      "fold_delta_ic": -6.938893903907228e-18,
+      "mean_abs_date_delta_ic": 5.02028973947688e-17,
+      "max_abs_date_delta_ic": 8.326672684688674e-17,
+      "reuse_ok": true
+    }
+  },
+  "seed": 42,
+  "smoke": false,
+  "n_ensemble": 20,
+  "purge_cal_days": 92,
+  "min_date_count": 30,
+  "config_used": {
+    "architecture": "[128, 64, 32]",
+    "lr": 0.001563563963064687,
+    "weight_decay": 4.4856093488331435e-05,
+    "dropout": 0.1146035891599349,
+    "var_threshold": 0.0010819081885486052,
+    "corr_threshold": 0.05584259829572068,
+    "epochs": 20000,
+    "patience": 41
+  },
+  "per_fold": [
+    {
+      "arm": "base",
+      "fold_id": 1,
+      "test_year": 2021,
+      "binding": true,
+      "n_macro_input": 43,
+      "n_macro_selected": 27,
+      "target_std_train_raw": 0.16739334166049957,
+      "target_std_train_used": 0.16739334166049957,
+      "mae_note": "MAE not comparable across arms (target scale differs)",
+      "purge_cutoff": "2020-10-01",
+      "n_train": 53045,
+      "n_test_samples": 12891,
+      "n_dates_used": 25,
+      "date_coverage": 0.953533472965635,
+      "ic": -0.008544775413457046,
+      "ic_std_across_dates": 0.15309228680891956,
+      "icir": -0.055814539004973594,
+      "ic_positive_date_frac": 0.44,
+      "alpha": -0.0319492481648922,
+      "alpha_std_across_dates": 0.12111211833757271,
+      "mae": 0.24067674577236176,
+      "momentum_feature": "return_180d",
+      "momentum_ic": -0.09640741821741297,
+      "n_features": 72,
+      "elapsed_min": 164.75545373360316
+    }
+  ],
+  "binding_aggregate": {
+    "binding_folds": [
+      1
+    ],
+    "mean_ic": -0.008544775413457046,
+    "fold_ics": [
+      -0.008544775413457046
+    ],
+    "n_positive_folds": 0,
+    "mean_alpha": -0.0319492481648922,
+    "fold_alphas": [
+      -0.0319492481648922
+    ]
+  }
+}
