@@ -55,3 +55,7 @@ Build v1 (526 tickers) reached 78.3% availability with 78 tickers below 50%. Thr
 ## Sequencing note (2026-09-09, before any R3 run)
 
 R2 seed-42 judged C−A MIXED (not PROMISING), so the base rule as written would select the v2.3.17 raw base. R2 Amendment 1 (three-seed replication of no-macro) runs first; R3's base is set by its verdict: PROMISING → base = nomacro (`--drop-macro`, raw target); otherwise → v2.3.17 raw base. Recorded before any R3 training; R3 anchors unchanged.
+
+## Sequencing note 2 (2026-09-10, before any R3 run)
+
+R2 Amendment 1 returned MIXED, so the primary R3 contrast uses the v2.3.17 raw base per the rule. Declared now, before running: a **secondary contrast on the no-macro base** (`--drop-macro --fund` vs committed `arm_nomacro_seed42`), because the raw base's 2023 inversion could confound the primary contrast (fundamentals might appear to "repair" 2023 for reasons already attributed to macro). Same anchors for both contrasts; the primary remains the pre-registered one; the secondary is reported as such.
