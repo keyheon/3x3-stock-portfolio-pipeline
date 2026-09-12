@@ -59,3 +59,9 @@ R2 seed-42 judged C−A MIXED (not PROMISING), so the base rule as written would
 ## Sequencing note 2 (2026-09-10, before any R3 run)
 
 R2 Amendment 1 returned MIXED, so the primary R3 contrast uses the v2.3.17 raw base per the rule. Declared now, before running: a **secondary contrast on the no-macro base** (`--drop-macro --fund` vs committed `arm_nomacro_seed42`), because the raw base's 2023 inversion could confound the primary contrast (fundamentals might appear to "repair" 2023 for reasons already attributed to macro). Same anchors for both contrasts; the primary remains the pre-registered one; the secondary is reported as such.
+
+---
+
+## Result Record and Disposition (seed 42, 2026-09-12; wf/verdict.md via r3_verdict.py)
+
+**Primary (fund-on-raw vs raw base): mean ΔIC +0.0032, positive 3/5 → MIXED**, with every fold delta inside seed noise (|Δ| ≤ 0.013) and the 2023 inversion left in place (−0.075 vs −0.088). **Secondary (fund-on-no-macro vs no-macro base): mean ΔIC −0.0002, positive 2/5 → DEAD.** In all ten folds, 0 of 9 fundamental features would have passed the corr filter unaided. Point-in-time profitability/investment/accrual features carry no time-axis ranking information for this model on either base. Contrast with R2: adding information (R3) does not repair the 2023 inversion; removing regime-identifying information (macro) does — the repair is specific to macro removal. **R3 card closed.** R3b (value factors requiring market capitalization) is not pursued absent a new case. No fundamentals configuration is added to the v2.3.19 tracked set (its condition, R3 PROMISING, was not met).
